@@ -1,5 +1,7 @@
 # LCARS.ahk Terminal Interface Engine (v2)
 
+![LCARS Terminal Interface Preview](LCARSv2.png)
+
 A fully responsive, modular Star Trek LCARS terminal interface and desktop environment manager for Windows built from the ground up using **AutoHotkey v2**.
 
 Designed as a multi-layered, non-activating GUI stack (`WS_EX_NOACTIVATE`), this engine acts as a custom desktop skin and workstation launcher without stealing keyboard focus or interfering with Windows auto-hide taskbars.
