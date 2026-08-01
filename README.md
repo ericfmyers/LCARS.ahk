@@ -1,6 +1,6 @@
-# LCARS.ahk Terminal Interface Engine (v2)
+# LCARS.ahk Terminal Interface Engine (v2.1)
 
-![LCARS Terminal Interface Preview](LCARSv2.png)
+![LCARS Terminal Interface Preview](LCARSv2.1.png)
 
 A fully responsive, modular Star Trek LCARS terminal interface and desktop environment manager for Windows built from the ground up using **AutoHotkey v2**.
 
@@ -12,7 +12,7 @@ Designed as a multi-layered, non-activating GUI stack (`WS_EX_NOACTIVATE`), this
 
 * **Split-Layer GUI Architecture:** Click-through background frame canvas (`+E0x20`) paired with interactive foreground overlay modules.
 * **Dynamic Taskbar Dock & Sidebar:** Real-time window process tracking and re-indexing using Windows Shell Hooks with isolated chroma-keying (`COLOR_DOCK_BG`).
-* **Drag-and-Drop Shortcut Grid:** Configurable launcher matrix supporting dynamic font scaling, tile color cycling, and interactive deletion zones.
+* **Dynamic GDI+ Vector Launcher Grid:** 32-bit anti-aliased pill controls supporting dynamic font auto-scaling, multi-tier color state cycling, and drag-and-drop tile management.
 * **GDI+ Vector System Controls:** Crisp, scaled vector UI controls for system termination, viewport snapping, and desktop matrix realignment.
 * **System Telemetry Monitoring:** Live WMI performance tracking for CPU, RAM, Network throughput, and Drive space usage.
 * **Non-Intrusive Volume & Clock Widgets:** Direct AHK v2 native hardware hooks for audio control and dynamic date/time format toggling.
@@ -77,18 +77,21 @@ No coding or AutoHotkey installation is required to run the standalone build.
 * **Realign Desktop Icons (Gold Dot):** Click the **Gold Vector Dot** to shift all desktop icons over into the visible viewport area so they aren't hidden behind the side panels. *(Note: Use with caution, as this will automatically rearrange your current desktop icon layout!)*
 
 ### 2. Application Shortcut Grid (Top Menu)
-* **Add a New Shortcut:** Click any empty steel-blue tile in the top grid. Enter a display label and target file path, folder, or URL when prompted. *(Note: Do not include quotation marks or parentheses around the target path).*
+* **Add a New Shortcut:** Click any empty tile in the top grid. Enter a display label and target file path, folder, or URL when prompted. *(Note: Do not include quotation marks or parentheses around the target path).*
 * **Launch an Application:** Click an active shortcut tile to open the application in maximized mode.
-* **Color Cycling:** Click an occupied tile to cycle through the standard LCARS color palette (Gold, Orange, Peach, Lilac, Cornflower, Light Blue, Muted Green).
+* **3-Tier Color & Text Cycling (`Alt + Right-Click`):** Press `Alt` while right-clicking an occupied tile to cycle through 3 distinct color combinations:
+  * **Tier 1:** Standard LCARS Accent Button + Dark Text
+  * **Tier 2:** Standard LCARS Accent Button + Cream Text
+  * **Tier 3:** Solid Black Button + Accent/Cream Text
 * **Move / Rearrange:** Click and drag a shortcut tile over an empty slot to relocate it.
-* **Delete a Shortcut:** Click and drag an occupied tile into the red **REMOVE** zone that appears in the top-left corner.
+* **Delete a Shortcut (`Ctrl + Right-Click`):** Press `Ctrl` while right-clicking an occupied tile to permanently delete it (requires confirmation prompt).
 
 ### 3. Dynamic Taskbar & Sidebar Dock
 * Tracks running applications and open windows automatically in real-time.
 * Click an application tile in the sidebar to bring that window to the front.
 * Click the red tactical close symbol on a dock block to terminate that application.
 * **Slot Color Indicators:** 
-  * **Yellow Tile:** Represents the currently **active** window.
+  * **Yellow Tile:** Represents the currently **active** window (Operations Yellow).
   * **Light Blue Tile:** Represents an **inactive** background window.
 
 ### 4. Telemetry & Widgets
