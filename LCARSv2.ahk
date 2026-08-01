@@ -1,136 +1,135 @@
+; Enforces AutoHotkey v2.0+ execution syntax and blocks legacy v1 runtime
 #Requires AutoHotkey v2.0
+; Automatically replaces any previously running instance of this script without prompting
 #SingleInstance Force
+; Keeps the script running continuously in the background even without active hotkeys
 Persistent(True) 
+; Sets the hover tooltip text displayed when mousing over the system tray icon
 A_IconTip := "LCARS Terminal Interface Engine"
 
 ; ==============================================================================
-; LCARS SYSTEM COLOR PALETTE (v2.0 Expanded)
+; LCARS SYSTEM COLOR PALETTE
 ; ==============================================================================
-global COLOR_BACKGROUND        := "000000"  ; Pure Black (The foundational background)
-global COLOR_NEUTRAL_GRAY      := "333333"  ; Dark Slate (System constant for empty slots)
-global COLOR_OFF_WHITE         := "FEEBDE"  ; Off-White / Cream (Text inside structural blocks)
-global COLOR_MAUVE             := "C86A6A"  ; LCARS Mauve / Dusty Rose (Used for tracking tracks)
-global COLOR_ORANGE            := "FF8800"  ; LCARS Orange (System frames and main headers)
-global COLOR_GOLD              := "FFAA00"  ; LCARS Gold (The most recognizable interface block tone)
-global COLOR_PEACH             := "FF9900"  ; LCARS Peach / Muted Apricot (Secondary functions)
-global COLOR_PURPLE            := "996699"  ; LCARS Medium/Dark Purple (Seen in data tracks)
-global COLOR_CORNFLOWER        := "6699FF"  ; LCARS Blue / Cornflower (Interactive shortcuts)
-global COLOR_LILAC             := "CC99CC"  ; Light Purple/Lilac (Standard navigation & secondary text)
-global COLOR_LIGHT_BLUE        := "BBBBFF"  ; Light Blue (Data blocks and telemetry readouts)
-global COLOR_STEEL_BLUE        := "555577"  ; Steel Blue (Neutral apps launched outside menu)
-global COLOR_MUTED_GREEN       := "99AA66"  ; Muted Green (Auxiliary systems and scanners)
-global COLOR_RED               := "EE0000"  ; Standard Red (Bright primary red for structural alerts/kill switches)
-global COLOR_DARK_RED          := "882211"  ; Dark Red (Used for system anomalies)
-global COLOR_BURGUNDY          := "CC6666"  ; Burgundy (Used for tactical submenus)
-global COLOR_BLUE              := "0A4BEE"  ; Standard Blue (Deep Blue Alert for tactical/environmental shifts)
-global COLOR_BRIGHT_RED        := "FF0000"  ; High-intensity alert status; ideal for critical warnings.
-global COLOR_BRIGHT_YELLOW     := "FFCC00"  ; Classic "Operations" yellow; high visibility for active buttons.
-global COLOR_BRIGHT_BLUE       := "0066FF"  ; A vivid, modern blue; useful for active telemetry or focused selection states.
-global COLOR_PALE_CANARY       := "FFFF99"  ; A soft, light yellow often used for background highlighting or secondary text.
-global COLOR_ATOMIC_TANGERINE  := "FF9933"  ; A vibrant, slightly softer orange than your main orange, perfect for secondary headers.
-global COLOR_EGGPLANT          := "664466"  ; A rich, deep purple used in many technical LCARS layouts for panel structure or inactive status fields.
-global COLOR_ANAKIWA           := "99CCFF"  ; A light, sky-blue often used to indicate "system ready" or clear data fields.
-global COLOR_MARINER_BLUE      := "3366CC"  ; A mid-tone blue that bridges the gap between your CORNFLOWER and STEEL_BLUE.
-global COLOR_SCIENCE_TEAL      := "008080"  ; A classic, distinctive teal frequently seen in the Science/Medical station layouts.
-global COLOR_DUSKY_PINK        := "E5A9A9"  ; Shifted slightly toward a true dusty rose to differentiate from Lilac ("CC99CC")
-global CHROMA_KEY              := "111111"  ; Transparent key
-global COLOR_DOCK_BG := "020202"
-
-; Shared Volume Control Palette Shortcuts
-global COLOR_AMBER  := COLOR_BRIGHT_YELLOW
-global COLOR_LAV    := COLOR_LILAC
+global COLOR_BACKGROUND        := "000000"  ; Defines global hex code for foundational canvas background (Pure Black)
+global COLOR_NEUTRAL_GRAY      := "333333"  ; Defines global hex code for empty grid slots and placeholders (Dark Slate)
+global COLOR_OFF_WHITE         := "FEEBDE"  ; Defines global hex code for primary text inside structural blocks (Cream)
+global COLOR_MAUVE             := "C86A6A"  ; Defines global hex code for sidebar tracks and bottom row blocks (Dusty Rose)
+global COLOR_ORANGE            := "FF8800"  ; Defines global hex code for structural frames and primary headers
+global COLOR_GOLD              := "FFAA00"  ; Defines global hex code for standard shortcut buttons and default accents
+global COLOR_PEACH             := "FF9900"  ; Defines global hex code for secondary menu functions (Muted Apricot)
+global COLOR_PURPLE            := "996699"  ; Defines global hex code for segmented data tracks and telemetry blocks
+global COLOR_CORNFLOWER        := "6699FF"  ; Defines global hex code for default taskbar dock pill buttons
+global COLOR_LILAC             := "CC99CC"  ; Defines global hex code for main top menu bars and secondary navigation
+global COLOR_LIGHT_BLUE        := "BBBBFF"  ; Defines global hex code for telemetry readouts and upper sidebar blocks
+global COLOR_STEEL_BLUE        := "555577"  ; Defines global hex code for unconfigured shortcut tiles
+global COLOR_MUTED_GREEN       := "99AA66"  ; Defines global hex code for drive monitoring indicators and scanners
+global COLOR_RED               := "EE0000"  ; Defines global hex code for system termination controls and critical alerts
+global COLOR_DARK_RED          := "882211"  ; Defines global hex code for system anomaly readouts
+global COLOR_BURGUNDY          := "CC6666"  ; Defines global hex code for tactical submenus and auxiliary panels
+global COLOR_BLUE              := "0A4BEE"  ; Defines global hex code for RAM telemetry indicators and tactical shifts
+global COLOR_BRIGHT_RED        := "FF0000"  ; Defines global hex code for active mute toggles and deletion drop zones
+global COLOR_BRIGHT_YELLOW     := "FFCC00"  ; Defines global hex code for active taskbar window indicators (Operations Yellow)
+global COLOR_BRIGHT_BLUE       := "0066FF"  ; Defines global hex code for vivid selection states and telemetry highlights
+global COLOR_PALE_CANARY       := "FFFF99"  ; Defines global hex code for secondary background highlights and text
+global COLOR_ATOMIC_TANGERINE  := "FF9933"  ; Defines global hex code for secondary headers and soft orange accents
+global COLOR_EGGPLANT          := "664466"  ; Defines global hex code for inactive status fields and structural panels
+global COLOR_ANAKIWA           := "99CCFF"  ; Defines global hex code for system-ready indicators and clear data fields
+global COLOR_MARINER_BLUE      := "3366CC"  ; Defines global hex code for mid-tone interface elements
+global COLOR_SCIENCE_TEAL      := "008080"  ; Defines global hex code for science and medical station panel layouts
+global COLOR_DUSKY_PINK        := "E5A9A9"  ; Defines global hex code for dusty rose interface accents
+global CHROMA_KEY              := "111111"  ; Defines global transparency mask color for click-through GUI layers
+global COLOR_DOCK_BG           := "020202"  ; Defines global transparency key for taskbar dock framing and dividers
+global COLOR_AMBER             := COLOR_BRIGHT_YELLOW  ; Maps global volume widget accent alias to bright yellow
+global COLOR_LAV               := COLOR_LILAC          ; Maps global volume widget accent alias to lilac
 
 ; ==============================================================================
 ; DYNAMIC WORKSPACE DOCK BOUNDS & INTERFACE HANDLES
 ; ==============================================================================
-global ScreenWidth     := 0
-global ScreenHeight    := 0
-global ScaleMultiplier := 1.0
-global ActiveWinX      := 0
-global ActiveWinY      := 0
-global ActiveWinW      := 0
-global ActiveWinH      := 0
-global TopPad          := 0
-global MainGuiHwnd     := 0
-global AuxMenuGui      := 0
-global LastActiveAppHWND := 0
+global ScreenWidth     := 0    ; Stores primary display pixel width initialized during setup
+global ScreenHeight    := 0    ; Stores primary display pixel height initialized during setup
+global ScaleMultiplier := 1.0  ; Calculates UI scaling ratio based on target 1080p baseline height
+global ActiveWinX      := 0    ; Defines target X-coordinate origin for snapped window viewports
+global ActiveWinY      := 0    ; Defines target Y-coordinate origin for snapped window viewports
+global ActiveWinW      := 0    ; Defines target pixel width for snapped window viewports
+global ActiveWinH      := 0    ; Defines target pixel height for snapped window viewports
+global MainGuiHwnd     := 0    ; Holds native window handle for static canvas background GUI
+global AuxMenuGui      := 0    ; Holds GUI object handle for three-dot system command overlay
+global LastActiveAppHWND := 0  ; Caches window handle of last active app for viewport snapper
 
 ; ==============================================================================
 ; TOPMENU SHORTCUT ENGINE GLOBALS
 ; ==============================================================================
-global ShortcutMenuGui  := ""
-global IniFilePath      := A_ScriptDir . "\LcarsConfig.ini"
-global GlobalBoxWidth   := 0
-global GlobalBoxHeight  := 0
-global GlobalPadding    := 0
-global MenuFontSize     := 16
-global TopMenuCols      := 0
-global TopMenuRows      := 3
-global BoxControls      := Map()
-global SourceBoxCtrl    := ""        
-global DragStartX       := 0
-global DragStartY       := 0 
-global IsDraggingState  := false
-global DeleteZoneGui    := ""
-global DeleteZoneCtrl   := ""
+global ShortcutMenuGui  := ""   ; Holds GUI object handle for top shortcut grid overlay
+global IniFilePath      := A_ScriptDir . "\LcarsConfig.ini" ; Defines absolute path to shortcut configuration file
+global GlobalBoxWidth   := 0    ; Stores calculated pixel width for shortcut pill controls
+global GlobalBoxHeight  := 0    ; Stores calculated pixel height for shortcut pill controls
+global GlobalPadding    := 0    ; Stores calculated pixel spacing between grid shortcut controls
+global MenuFontSize     := 16   ; Defines baseline font size for grid launcher interface
+global TopMenuCols      := 0    ; Stores dynamically calculated column count for top grid
+global TopMenuRows      := 3    ; Defines fixed row count for top shortcut button matrix
+global BoxControls      := Map() ; Maps slot keys to GUI control objects for grid management
+global SourceBoxCtrl    := ""   ; Caches source control object during drag-and-drop actions
+global DragStartX       := 0    ; Stores screen X-coordinate where click-drag gesture originated
+global DragStartY       := 0    ; Stores screen Y-coordinate where click-drag gesture originated
 
 ; ==============================================================================
 ; SYSTEM STATS ENGINE GLOBALS
 ; ==============================================================================
-global CurrentSelection := "CPU"
-global SelectedDrive    := ""
-global StatsGui         := ""
-global StatsReadout     := ""
-global ActiveColorBar   := ""
+global CurrentSelection := "CPU" ; Defines active telemetry display mode (CPU, RAM, NET, or DRIVE)
+global SelectedDrive    := ""    ; Stores target drive letter when drive telemetry mode is active
+global StatsGui         := ""    ; Holds GUI object handle for telemetry monitoring panel overlay
+global StatsReadout     := ""    ; Holds text control object handle for telemetry value readouts
+global ActiveColorBar   := ""    ; Holds text control object handle for telemetry indicator color bar
 
 ; ==============================================================================
 ; CLOCK MODULE GLOBALS
 ; ==============================================================================
-global ClockGui         := ""
-global DateDisplay      := ""
-global TimeDisplay      := ""
-global DateFormatState  := 1
-global TimeFormatState  := 1
+global ClockGui         := "" ; Holds GUI object handle for time and date widget overlay
+global DateDisplay      := "" ; Holds text control object handle for date readout
+global TimeDisplay      := "" ; Holds text control object handle for time readout
+global DateFormatState  := 1  ; Tracks active date display format toggle state
+global TimeFormatState  := 1  ; Tracks active time display format toggle state
 
 ; ==============================================================================
 ; VOLUME CONTROL MODULE GLOBALS
 ; ==============================================================================
-global volGui           := ""
+global volGui           := "" ; Holds GUI object handle for integrated volume control widget overlay
 
 ; ==============================================================================
 ; TASKBAR DOCK ENGINE GLOBALS
 ; ==============================================================================
-global LCARS_DockGui    := ""
-global BlockWidth       := 126  
-global MaxSlots         := 20  
-global SlotHWNDs        := []
-global DockControls     := []
-global TopBlackBar      := ""
-global BottomBlackBar   := ""
+global LCARS_DockGui    := "" ; Holds GUI object handle for dynamic taskbar dock sidebar overlay
+global BlockWidth       := 126  ; Defines pixel width for taskbar dock app slot controls
+global MaxSlots         := 20  ; Defines maximum capacity limit for open application dock slots
+global SlotHWNDs        := [] ; Array storing tracked window handles corresponding to dock slots
+global DockControls     := [] ; Array storing GUI control object maps for each dock row slot
+global TopBlackBar      := "" ; Holds picture control object handle for upper black framing bar
+global BottomBlackBar   := "" ; Holds picture control object handle for lower black framing bar
 
 ; ==============================================================================
 ; GLOBAL ERROR TRAP
 ; ==============================================================================
-OnError(LcarsErrorHandler)
-LcarsErrorHandler(err, mode) {
-    OutputDebug("LCARS ERROR: " . err.Message . " (" . err.What . " @ line " . err.Line . ")")
-    return true 
+OnError(LcarsErrorHandler) ; Registers global exception handler callback for runtime errors
+LcarsErrorHandler(err, mode) { ; Defines exception handler function accepting error object and mode
+    OutputDebug("LCARS ERROR: " . err.Message . " (" . err.What . " @ line " . err.Line . ")") ; Writes error details, origin function, and line number to debug log
+    return true  ; Suppresses default system error dialogs to keep interface running uninterrupted
 }
 
 ; ==============================================================================
 ; SYSTEM INITIALIZATION ROUTINE (AUTO-EXECUTE PHASE)
 ; ==============================================================================
-InitializeLcars()
-InitializeAuxMenu()
-InitializeShortcutMenu()
-InitializeStatsMenu()
-InitializeClockWidget()
-InitializeVolumeWidget()
-InitializeTaskbarDock()
+InitializeLcars()        ; Instantiates main background canvas, viewport metrics, and shell hooks
+InitializeAuxMenu()      ; Renders three-dot vector GDI+ system command overlay
+InitializeShortcutMenu() ; Builds interactive launcher grid and loads saved INI shortcuts
+InitializeStatsMenu()    ; Initializes WMI performance monitoring panel and controls
+InitializeClockWidget()  ; Renders interactive date and time display widget
+InitializeVolumeWidget() ; Instantiates audio volume control overlay and hardware hooks
+InitializeTaskbarDock()  ; Builds dynamic taskbar sidebar and registers window tracking
 
 ; Global focus message monitors
-OnMessage(0x0201, WM_LBUTTONDOWN)
-OnMessage(0x0202, WM_LBUTTONUP)
+OnMessage(0x0201, WM_LBUTTONDOWN) ; Registers left mouse button down event monitor to handle grid clicks and drag actions
+OnMessage(0x0202, WM_LBUTTONUP)   ; Registers left mouse button up event monitor to handle button releases and shortcut launches
+OnMessage(0x0205, WM_RBUTTONUP)   ; Registers right mouse button up event monitor to handle color cycling
 
 ; Layer Enforcement Timer for all interactive panels
 SetTimer(EnforceLayers, 500)
@@ -139,220 +138,228 @@ SetTimer(EnforceLayers, 500)
 Return
 
 ; ==============================================================================
-; MAIN INTERFACE ENGINE
+; MAIN INTERFACE ENGINE (HIGH-DPI CANVAS FRAMEWORK)
 ; ==============================================================================
 InitializeLcars() {
-    ; Environment Detection - Absolute screen size for auto-hide taskbars
+    ; Query primary display monitor boundaries to establish physical resolution metrics
     MonitorGet(1, &Left, &Top, &Right, &Bottom)
-    global ScreenWidth     := Right - Left
-    global ScreenHeight    := Bottom - Top
-    global ScaleMultiplier := ScreenHeight / 1080
+    global ScreenWidth     := Right - Left      ; Calculates total display pixel width
+    global ScreenHeight    := Bottom - Top     ; Calculates total display pixel height
+    global ScaleMultiplier := ScreenHeight / 1080 ; Derives dynamic UI scaling ratio normalized against a baseline 1080p display height
 
-    StaticX := 147
-    StaticY := 130
+    StaticX := Round(147 * ScaleMultiplier)    ; Scales baseline horizontal pixel offset for workspace boundary alignment
+    StaticY := Round(130 * ScaleMultiplier)    ; Scales baseline vertical pixel offset for upper menu interface clearance
 
-    ; Identify desktop window handle
+    ; Captures native Windows desktop canvas handle for background redraw refreshing
     DesktopHwnd := WinExist("ahk_class WorkerW") ? WinExist("ahk_class WorkerW") : WinExist("ahk_class Progman")
 
     ; --- LAYER 1: BACKGROUND CANVAS (CLICK-THROUGH) ---
-    TopMenuGui := Gui("-Caption +ToolWindow +E0x20 +E0x08000000")
-    TopMenuGui.BackColor := CHROMA_KEY
-    global MainGuiHwnd := TopMenuGui.Hwnd
+    TopMenuGui := Gui("-Caption +ToolWindow +E0x20 +E0x08000000") ; Creates frameless, non-activating, click-through GUI overlay for canvas artwork
+    TopMenuGui.BackColor := CHROMA_KEY                             ; Applies global transparency mask color to establish click-through background canvas
+    global MainGuiHwnd := TopMenuGui.Hwnd                          ; Caches native window handle of background canvas GUI for layer Z-order management
 
-    ; --- Layout Elements ---
-    TopMenuX := 0, TopMenuY := 0
-    StatsReservation := Round(510 * ScaleMultiplier)
-    TopMenuW := (StaticX + (ScreenWidth - StaticX) - StatsReservation) + 40, TopMenuH := 101
-    TopMenuGui.AddText("x" . TopMenuX . " y" . TopMenuY . " w" . TopMenuW . " h" . TopMenuH . " Background" . COLOR_LILAC)
+    ; --- Top Header Frame ---
+    TopMenuX := 0, TopMenuY := 0 ; Defines horizontal and vertical origins for primary top menu header block
+    StatsReservation := Round(510 * ScaleMultiplier) ; Calculates horizontal pixel buffer reserved for top-right telemetry panel
+    TopMenuW := (StaticX + (ScreenWidth - StaticX) - StatsReservation) + Round(40 * ScaleMultiplier) ; Computes scaled total pixel width for primary top menu block
+    TopMenuH := Round(101 * ScaleMultiplier) ; Scales pixel height for primary top menu block
+    TopMenuGui.AddText("x" . TopMenuX . " y" . TopMenuY . " w" . TopMenuW . " h" . TopMenuH . " Background" . COLOR_LILAC) ; Renders primary top header background block in lilac
 
-    TopMenuX1 := 0, TopMenuY1 := 75
-    TopMenuW1 := Round(340 * ScaleMultiplier), TopMenuH1 := 48
-    TopMenuGui.AddText("x" . TopMenuX1 . " y" . TopMenuY1 . " w" . TopMenuW1 . " h" . TopMenuH1 . " Background" . COLOR_LIGHT_BLUE)
+    TopMenuX1 := 0, TopMenuY1 := Round(75 * ScaleMultiplier) ; Scales origin coordinates for upper-left secondary header block extension
+    TopMenuW1 := Round(340 * ScaleMultiplier), TopMenuH1 := Round(48 * ScaleMultiplier) ; Scales width and height for upper-left secondary header block
+    TopMenuGui.AddText("x" . TopMenuX1 . " y" . TopMenuY1 . " w" . TopMenuW1 . " h" . TopMenuH1 . " Background" . COLOR_LIGHT_BLUE) ; Renders upper-left secondary header block in light blue
 
-    TopMenuXbar := 0, TopMenuYbar := 73
-    TopMenuWbar := 140, TopMenuHbar := 6
-    TopMenuGui.AddText("x" . TopMenuXbar . " y" . TopMenuYbar . " w" . TopMenuWbar . " h" . TopMenuHbar . " Background" . COLOR_BACKGROUND)
+    TopMenuXbar := 0, TopMenuYbar := Round(73 * ScaleMultiplier) ; Scales coordinates for horizontal separating line above secondary header
+    TopMenuWbar := Round(140 * ScaleMultiplier), TopMenuHbar := Round(6 * ScaleMultiplier) ; Scales pixel dimensions for upper horizontal separator bar
+    TopMenuGui.AddText("x" . TopMenuXbar . " y" . TopMenuYbar . " w" . TopMenuWbar . " h" . TopMenuHbar . " Background" . COLOR_BACKGROUND) ; Renders upper separator bar in solid background color
 
-    TopMenuX4 := Round(346 * ScaleMultiplier), TopMenuY4 := 107
-    TopMenuW4 := Round(65 * ScaleMultiplier), TopMenuH4 := 16
-    TopMenuGui.AddText("x" . TopMenuX4 . " y" . TopMenuY4 . " w" . TopMenuW4 . " h" . TopMenuH4 . " Background" . COLOR_ORANGE)
+    ; --- Segmented Data Blocks Row ---
+    TopMenuX4 := Round(346 * ScaleMultiplier), TopMenuY4 := Round(107 * ScaleMultiplier) ; Scales position for first segmented header accent block
+    TopMenuW4 := Round(65 * ScaleMultiplier),  TopMenuH4 := Round(16 * ScaleMultiplier)  ; Scales dimensions for first segmented header accent block
+    TopMenuGui.AddText("x" . TopMenuX4 . " y" . TopMenuY4 . " w" . TopMenuW4 . " h" . TopMenuH4 . " Background" . COLOR_ORANGE) ; Renders first segmented header accent block in orange
 
-    TopMenuX5 := Round(417 * ScaleMultiplier), TopMenuY5 := 107
-    TopMenuW5 := Round(385 * ScaleMultiplier), TopMenuH5 := 16
-    TopMenuGui.AddText("x" . TopMenuX5 . " y" . TopMenuY5 . " w" . TopMenuW5 . " h" . TopMenuH5 . " Background" . COLOR_PURPLE)
+    TopMenuX5 := Round(417 * ScaleMultiplier), TopMenuY5 := Round(107 * ScaleMultiplier) ; Scales position for second segmented header data track
+    TopMenuW5 := Round(385 * ScaleMultiplier), TopMenuH5 := Round(16 * ScaleMultiplier)  ; Scales dimensions for second segmented header data track
+    TopMenuGui.AddText("x" . TopMenuX5 . " y" . TopMenuY5 . " w" . TopMenuW5 . " h" . TopMenuH5 . " Background" . COLOR_PURPLE) ; Renders second segmented header data track in purple
 
-    TopMenuX6 := Round(808 * ScaleMultiplier), TopMenuY6 := 107
-    TopMenuW6 := Round(200 * ScaleMultiplier), TopMenuH6 := 16
-    TopMenuGui.AddText("x" . TopMenuX6 . " y" . TopMenuY6 . " w" . TopMenuW6 . " h" . TopMenuH6 . " Background" . COLOR_LILAC)
+    TopMenuX6 := Round(808 * ScaleMultiplier), TopMenuY6 := Round(107 * ScaleMultiplier) ; Scales position for third segmented header accent block
+    TopMenuW6 := Round(200 * ScaleMultiplier), TopMenuH6 := Round(16 * ScaleMultiplier)  ; Scales dimensions for third segmented header accent block
+    TopMenuGui.AddText("x" . TopMenuX6 . " y" . TopMenuY6 . " w" . TopMenuW6 . " h" . TopMenuH6 . " Background" . COLOR_LILAC) ; Renders third segmented header accent block in lilac
 
-    TopMenuX7 := Round(1014 * ScaleMultiplier), TopMenuY7 := 107
-    TopMenuW7 := Round(65 * ScaleMultiplier), TopMenuH7 := 16
-    TopMenuGui.AddText("x" . TopMenuX7 . " y" . TopMenuY7 . " w" . TopMenuW7 . " h" . TopMenuH7 . " Background" . COLOR_ORANGE)
+    TopMenuX7 := Round(1014 * ScaleMultiplier), TopMenuY7 := Round(107 * ScaleMultiplier) ; Scales position for fourth segmented header accent block
+    TopMenuW7 := Round(65 * ScaleMultiplier),   TopMenuH7 := Round(16 * ScaleMultiplier)  ; Scales dimensions for fourth segmented header accent block
+    TopMenuGui.AddText("x" . TopMenuX7 . " y" . TopMenuY7 . " w" . TopMenuW7 . " h" . TopMenuH7 . " Background" . COLOR_ORANGE) ; Renders fourth segmented header accent block in orange
 
-    TopMenuX8 := Round(1085 * ScaleMultiplier), TopMenuY8 := 107
-    TopMenuW8 := Round(700 * ScaleMultiplier), TopMenuH8 := 16
-    TopMenuGui.AddText("x" . TopMenuX8 . " y" . TopMenuY8 . " w" . TopMenuW8 . " h" . TopMenuH8 . " Background" . COLOR_MAUVE)
+    TopMenuX8 := Round(1085 * ScaleMultiplier), TopMenuY8 := Round(107 * ScaleMultiplier) ; Scales position for fifth segmented header data track
+    TopMenuW8 := Round(700 * ScaleMultiplier),  TopMenuH8 := Round(16 * ScaleMultiplier)  ; Scales dimensions for fifth segmented header data track
+    TopMenuGui.AddText("x" . TopMenuX8 . " y" . TopMenuY8 . " w" . TopMenuW8 . " h" . TopMenuH8 . " Background" . COLOR_MAUVE) ; Renders fifth segmented header data track in mauve
 
-    TopMenuX9 := Round(1791 * ScaleMultiplier), TopMenuY9 := 107
-    TopMenuW9 := Round(129 * ScaleMultiplier), TopMenuH9 := 16
-    TopMenuGui.AddText("x" . TopMenuX9 . " y" . TopMenuY9 . " w" . TopMenuW9 . " h" . TopMenuH9 . " Background" . COLOR_LILAC)
+    TopMenuX9 := Round(1791 * ScaleMultiplier), TopMenuY9 := Round(107 * ScaleMultiplier) ; Scales position for sixth segmented header terminal block
+    TopMenuW9 := Round(129 * ScaleMultiplier),  TopMenuH9 := Round(16 * ScaleMultiplier)  ; Scales dimensions for sixth segmented header terminal block
+    TopMenuGui.AddText("x" . TopMenuX9 . " y" . TopMenuY9 . " w" . TopMenuW9 . " h" . TopMenuH9 . " Background" . COLOR_LILAC) ; Renders sixth segmented header terminal block in lilac
 
-    TopMenuXb := 140, TopMenuYb := 0
-    TopMenuWb := (TopMenuW - 40 + 6) - TopMenuXb, TopMenuHb := 107
-    TopMenuGui.AddText("x" . TopMenuXb . " y" . TopMenuYb . " w" . TopMenuWb . " h" . TopMenuHb . " Background" . COLOR_BACKGROUND)
+    ; --- Scaled Grid Cutout Mask ---
+    TopMenuXb := Round(140 * ScaleMultiplier) ; Scales starting horizontal origin for main shortcut grid cutout mask
+    TopMenuWb := (TopMenuW - Round(40 * ScaleMultiplier) + Round(6 * ScaleMultiplier)) - TopMenuXb ; Calculates scaled width for primary top grid cutout field
+    TopMenuHb := Round(107 * ScaleMultiplier) ; Fully scales cutout height to ensure complete coverage for 3 full button rows on High-DPI displays
+    TopMenuGui.AddText("x" . TopMenuXb . " y0 w" . TopMenuWb . " h" . TopMenuHb . " Background" . COLOR_BACKGROUND) ; Renders cutout mask in solid background color to house the dynamic launcher matrix
 
-    SideBarX := 0, SideBarY := 123
-    SideBarW := 126, SideBarH := 100
-    TopMenuGui.AddText("x" . SideBarX . " y" . SideBarY . " w" . SideBarW . " h" . SideBarH . " Background" . COLOR_LIGHT_BLUE)
+    ; --- Sidebar Elements ---
+    SideBarX := 0, SideBarY := Round(123 * ScaleMultiplier) ; Scales origin coordinates for upper sidebar block
+    SideBarW := Round(126 * ScaleMultiplier), SideBarH := Round(100 * ScaleMultiplier) ; Scales width and height metrics for upper sidebar block
+    TopMenuGui.AddText("x" . SideBarX . " y" . SideBarY . " w" . SideBarW . " h" . SideBarH . " Background" . COLOR_LIGHT_BLUE) ; Renders upper sidebar block in light blue
 
-    SideBarX2 := 0, SideBarY2 := SideBarY + SideBarH
-    SideBarW2 := 126
-    SideBarH2 := ScreenHeight - SideBarY2
-    TopMenuGui.AddText("x" . SideBarX2 . " y" . SideBarY2 . " w" . SideBarW2 . " h" . SideBarH2 . " Background" . COLOR_MAUVE)
+    SideBarX2 := 0, SideBarY2 := SideBarY + SideBarH ; Calculates starting coordinates for main vertical sidebar track
+    SideBarW2 := Round(126 * ScaleMultiplier)        ; Sets scaled explicit width for main vertical sidebar track
+    SideBarH2 := ScreenHeight - SideBarY2            ; Calculates remaining display height to extend vertical sidebar track down to screen bottom
+    TopMenuGui.AddText("x" . SideBarX2 . " y" . SideBarY2 . " w" . SideBarW2 . " h" . SideBarH2 . " Background" . COLOR_MAUVE) ; Renders main vertical sidebar track in mauve
 
-    ; Segmented Data Blocks Row
-    BotRowY := ScreenHeight - 32
-    TopMenuGui.AddText("x126 y" . BotRowY . " w" . Round(700 * ScaleMultiplier) . " h32 Background" . COLOR_MAUVE)
-    TopMenuGui.AddText("x" . Round(832 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h32 Background" . COLOR_ORANGE)
-    TopMenuGui.AddText("x" . Round(903 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(200 * ScaleMultiplier) . " h32 Background" . COLOR_LILAC)
-    TopMenuGui.AddText("x" . Round(1109 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(385 * ScaleMultiplier) . " h32 Background" . COLOR_PURPLE)
-    TopMenuGui.AddText("x" . Round(1500 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h32 Background" . COLOR_ORANGE)
-    
-    BotRowX9 := Round(1571 * ScaleMultiplier)
-    BotRowW9 := ScreenWidth - BotRowX9
-    TopMenuGui.AddText("x" . BotRowX9 . " y" . BotRowY . " w" . BotRowW9 . " h32 Background" . COLOR_LILAC)
+    ; --- Bottom Segmented Data Row ---
+    BotRowY := ScreenHeight - Round(32 * ScaleMultiplier) ; Calculates vertical origin to anchor the bottom telemetry bar exactly 32 scaled pixels above screen bottom
+    TopMenuGui.AddText("x" . Round(126 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(700 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_MAUVE)  ; Renders primary bottom-left mauve data track block starting adjacent to sidebar
+    TopMenuGui.AddText("x" . Round(832 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE) ; Renders first orange structural accent block in bottom telemetry row
+    TopMenuGui.AddText("x" . Round(903 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(200 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_LILAC)  ; Renders middle lilac navigation segment in bottom telemetry row
+    TopMenuGui.AddText("x" . Round(1109 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(385 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_PURPLE) ; Renders secondary purple data track block in bottom telemetry row
+    TopMenuGui.AddText("x" . Round(1500 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE) ; Renders second orange structural accent block in bottom telemetry row
 
-    ; --- CALCULATE WORKSPACE DOCK BOUNDS ---
-    global ActiveWinX := StaticX
-    global ActiveWinY := StaticY
-    global ActiveWinW := ScreenWidth - StaticX + 10
+    BotRowX9 := Round(1571 * ScaleMultiplier) ; Calculates scaled starting horizontal coordinate for terminal right bottom block
+    BotRowW9 := ScreenWidth - BotRowX9        ; Dynamically calculates remaining pixel width to span terminal block to right screen edge
+    TopMenuGui.AddText("x" . BotRowX9 . " y" . BotRowY . " w" . BotRowW9 . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_LILAC) ; Renders final rightmost lilac terminal block extending to screen edge
+
+; --- CALCULATE WORKSPACE DOCK BOUNDS ---
+    global ActiveWinX := StaticX                              ; Sets horizontal pixel origin for snapped application viewport alignment
+    global ActiveWinY := StaticY                              ; Sets vertical pixel origin for snapped application viewport alignment
+    global ActiveWinW := ScreenWidth - StaticX + 10           ; Calculates viewport pixel width spanning from sidebar track to right edge
 
     ; Dynamically check for the taskbar, or fallback to your 40px guess
-    try {
-        WinGetPos(,,, &TaskbarH, "ahk_class Shell_TrayWnd")
-    } catch {
-        TaskbarH := 40
+    try {                                                     ; Begins safe execution block to query system taskbar metrics
+        WinGetPos(,,, &TaskbarH, "ahk_class Shell_TrayWnd")   ; Queries native Windows shell taskbar handle to extract physical height
+    } catch {                                                 ; Handles exception if taskbar handle is inaccessible or hidden
+        TaskbarH := 40                                        ; Assigns baseline 40-pixel fallback estimate for vertical clearance
     }
     
-    ; Exact boundary assignment using the precise structural formula
-    global ActiveWinH := ScreenHeight - ((TaskbarH > 1) ? TaskbarH : 0) - StaticY + 10
-    global TopPad     := ActiveWinY
+; Exact boundary assignment using the precise structural formula
+    global ActiveWinH := ScreenHeight - ((TaskbarH > 1) ? TaskbarH : 0) - StaticY + 10 ; Evaluates target viewport height while subtracting taskbar and upper menu clearance
 
     ; --- LAYER 2: INTERACTIVE FOREGROUND LAYER ---
-    InteractGui := Gui("-Caption +ToolWindow +E0x08000000 +Parent" . TopMenuGui.Hwnd)
-    InteractGui.BackColor := CHROMA_KEY
+    InteractGui := Gui("-Caption +ToolWindow +E0x08000000 +Parent" . TopMenuGui.Hwnd)    ; Instantiates child GUI overlay bound to main canvas using WS_EX_NOACTIVATE style
+    InteractGui.BackColor := CHROMA_KEY                                                  ; Applies global transparency mask color to establish click-through foreground layer
 
     ; --- RENDER EXECUTION ---
-    TopMenuGui.Show("x0 y0 w" . ScreenWidth . " h" . ScreenHeight . " NoActivate")
-    WinSetTransColor(CHROMA_KEY, TopMenuGui.Hwnd)
+    TopMenuGui.Show("x0 y0 w" . ScreenWidth . " h" . ScreenHeight . " NoActivate")        ; Displays background canvas GUI maximized across full display screen without capturing focus
+    WinSetTransColor(CHROMA_KEY, TopMenuGui.Hwnd)                                        ; Applies chroma key color mask to make transparent regions click-through to desktop
 
-    InteractGui.Show("x" . StaticX . " y" . StaticY . " w400 h100 NoActivate")
-    WinSetTransColor(CHROMA_KEY, InteractGui.Hwnd)
+    InteractGui.Show("x" . StaticX . " y" . StaticY . " w400 h100 NoActivate")            ; Displays interactive foreground layer at viewport origin coordinates without capturing focus
+    WinSetTransColor(CHROMA_KEY, InteractGui.Hwnd)                                       ; Applies chroma key color mask to interactive layer for seamless element transparency
 
     ; Primary layer placement below panels
-    SendInterfaceToBottom()
+    SendInterfaceToBottom()                                                              ; Forces main background canvas handle to bottom of window Z-order stack
 
     ; --- INITIALIZE VIEWPORT MANAGERS & SYSTEM HOOKS ---
-    DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)
-    OnMessage(DllCall("RegisterWindowMessage", "Str", "SHELLHOOK"), ShellEvent)
-    SetTimer(WatchdogCheck, 500)
+    DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)                              ; Registers script handle with Windows shell to listen for OS-wide window events
+    OnMessage(DllCall("RegisterWindowMessage", "Str", "SHELLHOOK"), ShellEvent)          ; Binds shell hook message monitor to ShellEvent callback handler function
+    SetTimer(WatchdogCheck, 500)                                                         ; Schedules repeating 500ms timer loop to monitor auxiliary menu layout integrity
 
-    EnforceBoundaries()
+    EnforceBoundaries()                                                                  ; Triggers immediate viewport snap evaluation for currently active foreground application
 
     ; Clean up rendering artifacts
-    DllCall("user32\RedrawWindow", "ptr", DesktopHwnd, "ptr", 0, "ptr", 0, "uint", 1)
+    DllCall("user32\RedrawWindow", "ptr", DesktopHwnd, "ptr", 0, "ptr", 0, "uint", 1)    ; Issues forced user32 redraw refresh to native desktop canvas to clear visual artifacts
 }
 
 ; ==============================================================================
 ; DYNAMIC TASKBAR SIDEBAR DOCK ENGINE
 ; ==============================================================================
 InitializeTaskbarDock() {
-    global LCARS_DockGui, TopBlackBar, BottomBlackBar, DockControls
+    global LCARS_DockGui, TopBlackBar, BottomBlackBar, DockControls                     ; References global handles and control array for sidebar taskbar dock management
     
-    VerticalOffset := 206
+    VerticalOffset := 206                                                               ; Defines baseline vertical pixel offset to position dock below upper sidebar blocks
     
-    LCARS_DockGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000")
+    LCARS_DockGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000")              ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     
-    ; CHANGE THIS LINE: Use COLOR_DOCK_BG instead of COLOR_BACKGROUND
-    LCARS_DockGui.BackColor := COLOR_DOCK_BG
-    WinSetTransColor(COLOR_DOCK_BG, LCARS_DockGui)
+    LCARS_DockGui.BackColor := COLOR_DOCK_BG                                           ; Applies dedicated dock background color key ("020202") to preserve solid black dividers
+    WinSetTransColor(COLOR_DOCK_BG, LCARS_DockGui)                                     ; Sets transparency mask key so empty dock areas remain click-through to underlying elements
 
-    ; Keep CreateSolidBitmap using COLOR_BACKGROUND ("000000") so the bars stay solid black
-    TopBlackBar := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h6 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND))
-    BottomBlackBar := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h6 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND))
+    TopBlackBar := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h6 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND))    ; Pre-renders upper 6px solid black framing bar bitmap control
+    BottomBlackBar := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h6 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND)) ; Pre-renders lower 6px solid black framing bar bitmap control
 	
-    Loop MaxSlots
+    Loop MaxSlots                                                                       ; Iterates through pre-allocation loop to build reusable GUI slot controls up to capacity limit
     {
-        Row := {}
+        Row := {}                                                                      ; Instantiates temporary object map to group control handles for current slot row
         
         ; Main Pill Background
-        Row.Block := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h33 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_CORNFLOWER))
+        Row.Block := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h33 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_CORNFLOWER)) ; Instantiates dynamic slot background picture control
         
         ; App Name (Top Line)
-        LCARS_DockGui.SetFont("s8 Bold q5", "Arial")
-        Row.AppTxt := LCARS_DockGui.Add("Text", "x0 y0 w" . BlockWidth . " h14 c" . COLOR_BACKGROUND . " +BackgroundTrans +Hidden +0x4000")
+        LCARS_DockGui.SetFont("s8 Bold q5", "Arial")                                   ; Sets font parameters for process executable name readout with high-quality antialiasing
+        Row.AppTxt := LCARS_DockGui.Add("Text", "x0 y0 w" . BlockWidth . " h14 c" . COLOR_BACKGROUND . " +BackgroundTrans +Hidden +0x4000") ; Instantiates executable label text control with path-trimming style
         
         ; File Title (Bottom Line)
-        LCARS_DockGui.SetFont("s7 Norm", "Arial")
-        Row.Txt := LCARS_DockGui.Add("Text", "x0 y0 w" . BlockWidth . " h14 c" . COLOR_BACKGROUND . " +BackgroundTrans +Hidden +0x4000")
+        LCARS_DockGui.SetFont("s7 Norm", "Arial")                                   ; Sets font parameters for secondary active window title readout
+        Row.Txt := LCARS_DockGui.Add("Text", "x0 y0 w" . BlockWidth . " h14 c" . COLOR_BACKGROUND . " +BackgroundTrans +Hidden +0x4000")    ; Instantiates window title label text control with path-trimming style
         
         ; Unicode Tactical Close Button
-        LCARS_DockGui.SetFont("s38 q5", "Arial")
-        Row.Btn := LCARS_DockGui.Add("Text", "x0 y0 w40 h48 c" . COLOR_RED . " +BackgroundTrans +Hidden", Chr(0x25D7))
+        LCARS_DockGui.SetFont("s38 q5", "Arial")                                   ; Sets font scale for tactical close button glyph rendering
+        Row.Btn := LCARS_DockGui.Add("Text", "x0 y0 w40 h48 c" . COLOR_RED . " +BackgroundTrans +Hidden", Chr(0x25D7))                       ; Renders right-facing semi-circle Unicode character as tactical window termination button
         
         ; 1px Solid Interstitial Divider Line
-        Row.Divider := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h1 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND))
+        Row.Divider := LCARS_DockGui.Add("Pic", "x0 y0 w" . BlockWidth . " h1 Hidden", "HBITMAP:" . CreateSolidBitmap(COLOR_BACKGROUND)) ; Pre-renders 1px solid black interstitial row separator bitmap
         
         ; Bind native click events
-        Row.Block.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))
-        Row.AppTxt.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))
-        Row.Txt.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))
-        Row.Btn.OnEvent("Click", DockControlClicked.Bind(A_Index, "Close"))
+        Row.Block.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))       ; Binds main slot pill click event to focus target application window
+        Row.AppTxt.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))      ; Binds executable label text click event to focus target application window
+        Row.Txt.OnEvent("Click", DockControlClicked.Bind(A_Index, "Activate"))         ; Binds window title text click event to focus target application window
+        Row.Btn.OnEvent("Click", DockControlClicked.Bind(A_Index, "Close"))            ; Binds tactical close button click event to terminate target application window
         
-        DockControls.Push(Row)
+        DockControls.Push(Row)                                                         ; Pushes configured row control object map to global DockControls array
     }
 
-    LCARS_DockGui.Show("x0 y" . VerticalOffset . " w200 h" . (ScreenHeight - VerticalOffset) . " NoActivate")
+    LCARS_DockGui.Show("x0 y" . VerticalOffset . " w200 h" . (ScreenHeight - VerticalOffset) . " NoActivate") ; Displays taskbar dock sidebar GUI without capturing window focus
     
-    RefreshTaskbarDock()
+    RefreshTaskbarDock()                                                               ; Executes initial window process enumeration and renders active taskbar slots
 }
-
+; ==============================================================================
+; DYNAMIC TASKBAR SIDEBAR DOCK REFRESH & INTERACTION ENGINE
+; ==============================================================================
 RefreshTaskbarDock() {
     global SlotHWNDs, DockControls, TopBlackBar, BottomBlackBar
     
-    ActiveHWND := WinActive("A")
-    idList := WinGetList(,, "Program Manager")
+    ActiveHWND := WinActive("A")               ; Caches window handle of currently active foreground application
+    idList := WinGetList(,, "Program Manager") ; Captures list of all open window handles, excluding desktop manager
     
-    ; 1. Gather all currently valid open windows
-    CurrentWindows := Map()
+    ; --- 1. GATHER ALL CURRENTLY VALID OPEN WINDOWS ---
+    CurrentWindows := Map()                    ; Instantiates lookup map for tracking valid taskbar windows
     for this_id in idList
     {
-        Title := WinGetTitle(this_id)
+        Title := WinGetTitle(this_id)          ; Queries target window handle to retrieve title text
         
+        ; Filter out empty titles, system shell components, and LCARS interface elements
         if (Title = "" || Title = "Start" || Title = "Program Manager" || Title = "Settings" || Title = "LCARS_Sidebar")
             continue
             
-        Style := WinGetStyle(this_id)
-        ExStyle := WinGetExStyle(this_id)
+        Style := WinGetStyle(this_id)          ; Retrieves window style flags to check visibility
+        ExStyle := WinGetExStyle(this_id)      ; Retrieves extended style flags to check taskbar inclusion
+        
+        ; Verify window is visible (WS_VISIBLE 0x10000000) and not hidden toolwindow (WS_EX_TOOLWINDOW 0x00000080)
         if !(Style & 0x10000000) || (ExStyle & 0x00000080)
             continue
             
-        CurrentWindows[this_id] := Title
+        CurrentWindows[this_id] := Title       ; Maps valid window handle to its window title
     }
     
-    ; 2. RE-INDEX / SHIFT UP
-    NewSlotHWNDs := []
+    ; --- 2. RE-INDEX / SHIFT UP ---
+    NewSlotHWNDs := []                          ; Instantiates array to hold re-indexed active window handles
     for OldHWND in SlotHWNDs
     {
+        ; Retain existing tracked window handles if they remain valid and open
         if (OldHWND != 0 && CurrentWindows.Has(OldHWND)) {
             NewSlotHWNDs.Push(OldHWND)
         }
     }
     
-    ; 3. APPEND NEW WINDOWS
+    ; --- 3. APPEND NEW WINDOWS ---
     for win_id, win_title in CurrentWindows
     {
-        AlreadyTracked := false
+        AlreadyTracked := false                ; Flag tracking whether window is already assigned a dock slot
         for tracked_id in NewSlotHWNDs
         {
             if (tracked_id = win_id) {
@@ -361,24 +368,25 @@ RefreshTaskbarDock() {
             }
         }
         
+        ; Append newly opened window handle if capacity limit is not exceeded
         if (!AlreadyTracked && NewSlotHWNDs.Length < MaxSlots) {
             NewSlotHWNDs.Push(win_id)
         }
     }
     
-    SlotHWNDs := NewSlotHWNDs
-    ActiveCount := SlotHWNDs.Length
+    SlotHWNDs := NewSlotHWNDs                  ; Updates global tracked slot handle array with refreshed state
+    ActiveCount := SlotHWNDs.Length            ; Captures total count of actively tracked window slots
 
-    TotalRenderedBlocks := (ActiveCount = 0) ? 1 : ActiveCount
+    TotalRenderedBlocks := (ActiveCount = 0) ? 1 : ActiveCount ; Ensures at least one slot block renders for empty placeholder state
 
-    ; 4. RENDER ENGINE
+    ; --- 4. RENDER ENGINE ---
     Loop MaxSlots
     {
-        RowY := 6 + ((A_Index - 1) * 34)
-        Row := DockControls[A_Index]
+        RowY := 6 + ((A_Index - 1) * 34)       ; Calculates vertical pixel offset for current sidebar dock row
+        Row := DockControls[A_Index]            ; References control handle map for current dock slot row
         
         if (ActiveCount = 0 && A_Index = 1) {
-            ; Fallback: One grey placeholder box
+            ; Render fallback grey placeholder block when no application windows are open
             Row.Block.Value := "HBITMAP:" . CreateSolidBitmap(COLOR_NEUTRAL_GRAY)
             Row.Block.Move(0, RowY, BlockWidth, 33)
             Row.Block.Visible := true
@@ -392,33 +400,40 @@ RefreshTaskbarDock() {
             Row.Divider.Visible := false
         }
         else if (A_Index <= ActiveCount) {
-            ; Render dynamic active slot
+            ; Render dynamic active slot for valid tracked application window
             this_id := SlotHWNDs[A_Index]
             win_title := CurrentWindows[this_id]
             
-            PName := WinGetProcessName(this_id)
-            PName := StrUpper(RegExReplace(PName, "\.exe$", ""))
+            PName := WinGetProcessName(this_id) ; Queries executable process name associated with window handle
+            PName := StrUpper(RegExReplace(PName, "\.exe$", "")) ; Truncates .exe extension and converts label to uppercase
             
+            ; Highlight active foreground window in Operations Yellow; unselected windows in Light Blue
             TargetColor := (this_id = ActiveHWND) ? COLOR_BRIGHT_YELLOW : COLOR_LIGHT_BLUE
             
+            ; Apply path and character truncation to fit pill bounding dimensions
             DisplayApp := (StrLen(PName) > 15) ? SubStr(PName, 1, 12) . "..." : PName
             DisplayTitle := (StrLen(win_title) > 28) ? SubStr(win_title, 1, 25) . "..." : win_title
             
+            ; Update background color and position pill control
             Row.Block.Value := "HBITMAP:" . CreateSolidBitmap(TargetColor)
             Row.Block.Move(0, RowY, BlockWidth, 33)
             Row.Block.Visible := true
             
+            ; Update primary executable label readout
             Row.AppTxt.Value := DisplayApp
             Row.AppTxt.Move(6, RowY + 2, BlockWidth, 14)
             Row.AppTxt.Visible := true
             
+            ; Update secondary window title readout
             Row.Txt.Value := DisplayTitle
             Row.Txt.Move(6, RowY + 15, BlockWidth, 14)
             Row.Txt.Visible := true
             
+            ; Position Unicode tactical window termination close button
             Row.Btn.Move(109, RowY - 15, 40, 48)
             Row.Btn.Visible := true
 
+            ; Render 1px solid black interstitial divider between populated slots
             if (A_Index < ActiveCount) {
                 Row.Divider.Move(0, RowY + 33, BlockWidth, 1)
                 Row.Divider.Visible := true
@@ -427,6 +442,7 @@ RefreshTaskbarDock() {
             }
         }
         else {
+            ; Hide unused controls for unpopulated pre-allocated slots
             Row.Block.Visible := false
             Row.AppTxt.Visible := false
             Row.Txt.Visible := false
@@ -435,82 +451,88 @@ RefreshTaskbarDock() {
         }
     }
 
-    ; 5. DYNAMIC BOUNDARY FRAME RENDERING
-    TopBlackBar.Move(0, 0, BlockWidth, 6)
+    ; --- 5. DYNAMIC BOUNDARY FRAME RENDERING ---
+    TopBlackBar.Move(0, 0, BlockWidth, 6)      ; Positions upper 6px solid black framing bar
     TopBlackBar.Visible := true
 
-    BottomY := 6 + (TotalRenderedBlocks * 34) - 1
-    BottomBlackBar.Move(0, BottomY, BlockWidth, 6)
+    BottomY := 6 + (TotalRenderedBlocks * 34) - 1 ; Calculates vertical origin to snap lower bar flush against bottom block
+    BottomBlackBar.Move(0, BottomY, BlockWidth, 6) ; Positions lower 6px solid black framing bar
     BottomBlackBar.Visible := true
 }
 
+; ==============================================================================
+; DOCK SLOT CLICK EVENT ROUTER
+; ==============================================================================
 DockControlClicked(SlotNum, Action, CtrlObj, Info) {
     global SlotHWNDs
-    if (SlotHWNDs.Length = 0 || SlotNum > SlotHWNDs.Length)
+    if (SlotHWNDs.Length = 0 || SlotNum > SlotHWNDs.Length) ; Aborts execution if target slot index is out of bounds
         return
         
-    TargetHWND := SlotHWNDs[SlotNum]
+    TargetHWND := SlotHWNDs[SlotNum]            ; Retrieves target window handle associated with clicked slot
     if (!TargetHWND)
         return
         
     if (Action = "Close") {
         if WinExist(TargetHWND) {
-            WinClose(TargetHWND)
+            WinClose(TargetHWND)               ; Issues standard OS close signal to target application window
         }
-        SetTimer(RefreshTaskbarDock, -1)
+        SetTimer(RefreshTaskbarDock, -1)       ; Triggers asynchronous immediate taskbar refresh cycle
     } else {
         if WinExist(TargetHWND) {
-            WinActivate(TargetHWND)
+            WinActivate(TargetHWND)             ; Restores and shifts OS window focus to target application
         }
     }
 }
-
 ; ==============================================================================
 ; INTERACTIVE CLOCK WIDGET MODULE
 ; ==============================================================================
 InitializeClockWidget() {
     global ClockGui, DateDisplay, TimeDisplay
     
+    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     ClockGui := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x08000000")
-    ClockGui.BackColor := "000000" 
-    WinSetTransColor("000000", ClockGui) 
+    ClockGui.BackColor := "000000"                                      ; Applies pure black canvas background
+    WinSetTransColor("000000", ClockGui)                                ; Sets black as transparency mask so empty space remains click-through
 
-    ; 1. Date Element (Top)
-    ClockGui.SetFont("s22", "Impact")
-    DateDisplay := ClockGui.AddText("y0 w250 h30 c" . COLOR_ORANGE . " Right +0x0100", "YYYY.MM.DD")
-    DateDisplay.OnEvent("Click", ToggleDate)
+    ; --- 1. DATE ELEMENT (TOP) ---
+    ClockGui.SetFont("s22", "Impact")                                   ; Sets Impact typography for primary date readout
+    DateDisplay := ClockGui.AddText("y0 w250 h30 c" . COLOR_ORANGE . " Right +0x0100", "YYYY.MM.DD") ; Instantiates right-aligned date text control in orange
+    DateDisplay.OnEvent("Click", ToggleDate)                            ; Binds native click event to toggle date formatting
 
-    ; 2. Time Element (Bottom)
-    ClockGui.SetFont("s33", "Impact")
-    TimeDisplay := ClockGui.AddText("y+0 w250 h50 c" . COLOR_OFF_WHITE . " Right +0x0100", "HH:MM:SS")
-    TimeDisplay.OnEvent("Click", ToggleTime)
+    ; --- 2. TIME ELEMENT (BOTTOM) ---
+    ClockGui.SetFont("s33", "Impact")                                   ; Sets enlarged Impact typography for primary time readout
+    TimeDisplay := ClockGui.AddText("y+0 w250 h50 c" . COLOR_OFF_WHITE . " Right +0x0100", "HH:MM:SS") ; Instantiates right-aligned time text control in off-white
+    TimeDisplay.OnEvent("Click", ToggleTime)                            ; Binds native click event to toggle time formatting
 
-    ; Scale positioning relative to screen dimensions if scaled, or absolute x1630 y10
-    ClockX := Round(1610 * ScaleMultiplier)
-    ClockY := Round(10 * ScaleMultiplier)
-    ClockGui.Show("x" . ClockX . " y" . ClockY . " NoActivate")
+    ; --- POSITIONING & SCALING ---
+    ClockX := Round(1610 * ScaleMultiplier)                             ; Scales horizontal origin relative to primary monitor resolution
+    ClockY := Round(10 * ScaleMultiplier)                               ; Scales vertical origin relative to primary monitor resolution
+    ClockGui.Show("x" . ClockX . " y" . ClockY . " NoActivate")         ; Renders clock widget GUI without capturing window focus
 
-    ; Initial state update and refresh loop
-    UpdateClock()
-    SetTimer(UpdateClock, 1000)
+    ; --- REFRESH LOOP ---
+    UpdateClock()                                                       ; Performs immediate time string valuation and UI render
+    SetTimer(UpdateClock, 1000)                                         ; Registers repeating 1-second timer cycle for real-time clock updates
 }
 
+; ==============================================================================
+; CLOCK FORMAT TOGGLE HANDLERS & RENDER ENGINE
+; ==============================================================================
 ToggleDate(*) {
-    global DateFormatState := !DateFormatState
-    UpdateClock()
+    global DateFormatState := !DateFormatState                           ; Flips date format toggle state flag (ISO 8601 vs. Standard US)
+    UpdateClock()                                                       ; Forces immediate text refresh to reflect updated date format
 }
 
 ToggleTime(*) {
-    global TimeFormatState := !TimeFormatState
-    UpdateClock()
+    global TimeFormatState := !TimeFormatState                           ; Flips time format toggle state flag (24-Hour Military vs. 12-Hour AM/PM)
+    UpdateClock()                                                       ; Forces immediate text refresh to reflect updated time format
 }
 
 UpdateClock(*) {
-    df := DateFormatState ? "yyyy.MM.dd" : "MM.dd.yyyy"
-    tf := TimeFormatState ? "HH:mm:ss" : "h:mm tt"
+    df := DateFormatState ? "yyyy.MM.dd" : "MM.dd.yyyy"                 ; Evaluates active format flag to derive date formatting template string
+    tf := TimeFormatState ? "HH:mm:ss" : "h:mm tt"                       ; Evaluates active format flag to derive time formatting template string
     
-    DateDisplay.Text := FormatTime(, df)
-    TimeDisplay.Text := FormatTime(, tf)
+    DateDisplay.Text := FormatTime(, df)                                ; Formats current system timestamp and writes to date text control
+    TimeDisplay.Text := FormatTime(, tf)                                ; Formats current system timestamp and writes to time text control
 }
 
 ; ==============================================================================
@@ -519,161 +541,167 @@ UpdateClock(*) {
 InitializeVolumeWidget() {
     global volGui
     
-    ; Create GUI Window using LCARS-compatible non-activating styles
+    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     volGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000", "LCARS VOLUME")
-    volGui.BackColor := COLOR_BACKGROUND
+    volGui.BackColor := COLOR_BACKGROUND                               ; Applies solid black canvas background
 
-    volGui.MarginX := 6
-    volGui.MarginY := 6
+    volGui.MarginX := 6                                                ; Defines horizontal pixel padding for interior controls
+    volGui.MarginY := 6                                                ; Defines vertical pixel padding for interior controls
 
-    currentVol := Round(SoundGetVolume())
-    isMuted    := SoundGetMute() ? true : false
+    currentVol := Round(SoundGetVolume())                              ; Queries OS audio endpoint to capture active volume percentage
+    isMuted    := SoundGetMute() ? true : false                         ; Queries OS audio endpoint to capture system mute status
 
-    ; Volume Status & Slider
+    ; --- VOLUME STATUS READOUT & SLIDER ---
     volGui.SetFont("s10 bold c" . (isMuted ? COLOR_RED : COLOR_AMBER), "Arial")
-    volTextCtrl := volGui.AddText("vVolText w104 Center", isMuted ? "VOL: MUTED" : "VOL: " . currentVol . "%")
+    volGui.AddText("vVolText w104 Center", isMuted ? "VOL: MUTED" : "VOL: " . currentVol . "%")
 
     volSlider := volGui.AddSlider("vVolSlider w104 Range0-100 ToolTip", currentVol)
     volSlider.OnEvent("Change", OnSliderChange)
 
-    ; Buttons
+    ; --- TACTICAL MUTE TOGGLE BUTTON ---
     volGui.SetFont("s10 bold cBlack", "Arial")
 
     btnMuteText  := isMuted ? "UNMUTE" : "MUTE"
     btnMuteColor := isMuted ? COLOR_RED : COLOR_LAV
 
-    btnMute := volGui.AddText("vBtnMute w104 h20 Center +0x200 Background" . btnMuteColor, btnMuteText)
-    btnMute.OnEvent("Click", ToggleMute)
+    volGui.AddText("vBtnMute w104 h20 Center +0x200 Background" . btnMuteColor, btnMuteText).OnEvent("Click", ToggleMute)
 
+    ; --- VOLUME STEP INCREMENT/DECREMENT BUTTONS ---
     volGui.SetFont("s15 bold cBlack", "Arial")
 
-    btnDown := volGui.AddText("w48 h18 x6 y+6 Center +0x200 Background" . COLOR_AMBER, "-")
-    btnDown.OnEvent("Click", (*) => AdjustVol(-5))
+    volGui.AddText("w48 h18 x6 y+6 Center +0x200 Background" . COLOR_AMBER, "-").OnEvent("Click", (*) => AdjustVol(-5))
+    volGui.AddText("w48 h18 x+8 yp Center +0x200 Background" . COLOR_AMBER, "+").OnEvent("Click", (*) => AdjustVol(+5))
 
-    btnUp := volGui.AddText("w48 h18 x+8 yp Center +0x200 Background" . COLOR_AMBER, "+")
-    btnUp.OnEvent("Click", (*) => AdjustVol(+5))
-
-    ; Position strictly on left screen edge (X:0, Y:78, Window Width: 116px)
-    volGui.Show("x0 y78 w116 NoActivate")
+    ; --- POSITIONING & RENDER ---
+    volGui.Show("x0 y78 w116 NoActivate")                              ; Displays volume widget along left screen edge without capturing window focus
 }
 
+; ==============================================================================
+; VOLUME CONTROL EVENT HANDLERS & OS AUDIO HOOKS
+; ==============================================================================
 OnSliderChange(ctrl, *) {
-    newVol := ctrl.Value
-    SoundSetVolume(newVol)
+    newVol := ctrl.Value                                               ; Captures target slider position value
+    SoundSetVolume(newVol)                                             ; Updates native Windows OS audio volume level
     
-    if (SoundGetMute()) {
-        SoundSetMute(0)
-        UpdateMuteUI(false)
+    if (SoundGetMute()) {                                              ; If system is currently muted, dragging slider auto-unmutes audio
+        SoundSetMute(0)                                                ; Clears native OS mute state
+        UpdateMuteUI(false)                                            ; Re-renders volume widget interface to active state
     } else {
-        volGui["VolText"].Value := "VOL: " . newVol . "%"
+        volGui["VolText"].Value := "VOL: " . newVol . "%"              ; Updates text readout control with current percentage
     }
 }
 
 AdjustVol(delta) {
-    current := SoundGetVolume()
-    target := Clamp(Round(current + delta), 0, 100)
-    SoundSetVolume(target)
-    volGui["VolSlider"].Value := target
+    current := SoundGetVolume()                                        ; Queries active OS audio volume level
+    target := Clamp(Round(current + delta), 0, 100)                     ; Calculates step adjustment and clamps result within 0-100 bounds
+    SoundSetVolume(target)                                             ; Writes clamped volume level to OS audio endpoint
+    volGui["VolSlider"].Value := target                                ; Syncs slider control position to updated volume value
     
-    if (SoundGetMute()) {
-        SoundSetMute(0)
-        UpdateMuteUI(false)
+    if (SoundGetMute()) {                                              ; If system is currently muted, pressing +/- auto-unmutes audio
+        SoundSetMute(0)                                                ; Clears native OS mute state
+        UpdateMuteUI(false)                                            ; Re-renders volume widget interface to active state
     } else {
-        volGui["VolText"].Value := "VOL: " . target . "%"
+        volGui["VolText"].Value := "VOL: " . target . "%"              ; Updates text readout control with adjusted percentage
     }
 }
 
 ToggleMute(*) {
-    SoundSetMute(-1)
-    realState := SoundGetMute() ? true : false
-    UpdateMuteUI(realState)
+    SoundSetMute(-1)                                                   ; Flips native Windows OS mute state
+    realState := SoundGetMute() ? true : false                         ; Queries OS endpoint to verify real-time mute status
+    UpdateMuteUI(realState)                                            ; Updates widget color scheme and text labels based on verified state
 }
 
 UpdateMuteUI(muted) {
-    volTxt := volGui["VolText"]
-    btnMuteCtrl := volGui["BtnMute"]
+    volTxt := volGui["VolText"]                                        ; References volume text readout control handle
+    btnMuteCtrl := volGui["BtnMute"]                                   ; References mute button control handle
     
     if (muted) {
-        btnMuteCtrl.Opt("+Background" . COLOR_RED)
-        btnMuteCtrl.Value := "UNMUTE"
+        btnMuteCtrl.Opt("+Background" . COLOR_RED)                      ; Shifts mute button background to critical alert red
+        btnMuteCtrl.Value := "UNMUTE"                                  ; Updates button label to prompt unmute action
         
-        volTxt.SetFont("c" . COLOR_RED)
-        volTxt.Value := "VOL: MUTED"
+        volTxt.SetFont("c" . COLOR_RED)                                ; Shifts status text font color to alert red
+        volTxt.Value := "VOL: MUTED"                                   ; Writes muted state string to status readout
     } else {
-        btnMuteCtrl.Opt("+Background" . COLOR_LAV)
-        btnMuteCtrl.Value := "MUTE"
+        btnMuteCtrl.Opt("+Background" . COLOR_LAV)                      ; Restores mute button background to standard lavender
+        btnMuteCtrl.Value := "MUTE"                                    ; Updates button label to prompt mute action
         
-        volTxt.SetFont("c" . COLOR_AMBER)
-        volTxt.Value := "VOL: " . Round(SoundGetVolume()) . "%"
+        volTxt.SetFont("c" . COLOR_AMBER)                              ; Restores status text font color to Operations Yellow
+        volTxt.Value := "VOL: " . Round(SoundGetVolume()) . "%"        ; Writes numeric volume percentage to status readout
     }
     
-    WinRedraw(volGui.Hwnd)
+    WinRedraw(volGui.Hwnd)                                             ; Issues forced redraw refresh to clear rendering artifacts
 }
 
+; ==============================================================================
+; UTILITY: VALUE CLAMPING ALGORITHM
+; ==============================================================================
 Clamp(val, low, high) {
-    return Max(low, Min(val, high))
+    return Max(low, Min(val, high))                                    ; Restricts numeric input value to fall strictly within specified bounds
 }
 
 ; ==============================================================================
 ; DYNAMIC SHORTCUT TOP MENU ENGINE
 ; ==============================================================================
 InitializeShortcutMenu() {
-    global ShortcutMenuGui, GlobalBoxWidth, GlobalBoxHeight, GlobalPadding, TopMenuCols, DeleteZoneGui, DeleteZoneCtrl
+    global ShortcutMenuGui, GlobalBoxWidth, GlobalBoxHeight, GlobalPadding, TopMenuCols
     
+    ; Defines base baseline dimensions and pixel spacing for shortcut pill buttons
     BaseWidth   := 125
     BaseHeight  := 33
     BasePadding := 1
 
+    ; Scales box metrics dynamically based on active display resolution relative to 1080p
     GlobalBoxWidth  := Round(BaseWidth * ScaleMultiplier)
     GlobalBoxHeight := Round(BaseHeight * ScaleMultiplier)
     GlobalPadding   := Round(BasePadding * ScaleMultiplier)
 
+    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     ShortcutMenuGui := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x08000000")
-    ShortcutMenuGui.BackColor := COLOR_BACKGROUND
-    ShortcutMenuGui.SetFont("s" . MenuFontSize . " norm", "Impact")
+    ShortcutMenuGui.BackColor := COLOR_BACKGROUND                         ; Applies pure black canvas background
+    ShortcutMenuGui.SetFont("s" . MenuFontSize . " norm", "Impact")       ; Applies baseline Impact typography for menu controls
 
+    ; Defines horizontal/vertical origins and overall height spanning 3 fixed button rows
     TopMenu_X := ActiveWinX
     TopMenu_Y := 0                               
     TopMenu_H := (GlobalBoxHeight * 3) + (GlobalPadding * 2) 
 
+    ; Calculates available grid rendering width by subtracting viewport origin and stats panel reservation
     StatsReservation := Round(510 * ScaleMultiplier) 
     TopMenu_W := (ScreenWidth - ActiveWinX) - StatsReservation  
 
+    ; Dynamically calculates maximum allowable column count based on available horizontal pixel width
     TopMenuCols := Floor((TopMenu_W + GlobalPadding) / (GlobalBoxWidth + GlobalPadding))
 
+    ; --- GRID GENERATION & INI SHORTCUT DESERIALIZATION ---
     Loop TopMenuRows {
         currentRow := A_Index
         Loop TopMenuCols {
             currentCol := A_Index
-            slotKey := "Slot_" . currentRow . "_" . currentCol
+            slotKey := "Slot_" . currentRow . "_" . currentCol           ; Generates unique cell identifier key (e.g., Slot_1_1)
             
+            ; Calculates relative pixel placement coordinates within the shortcut grid GUI
             boxX := (currentCol - 1) * (GlobalBoxWidth + GlobalPadding)
             boxY := (currentRow - 1) * (GlobalBoxHeight + GlobalPadding)
             
+            ; Reads saved label, target launch path, and accent color settings from INI configuration file
             btnName  := IniRead(IniFilePath, "Shortcuts", slotKey . "_Name", "")
             btnPath  := IniRead(IniFilePath, "Shortcuts", slotKey . "_Path", "")
             btnColor := IniRead(IniFilePath, "Shortcuts", slotKey . "_Color", COLOR_STEEL_BLUE)
-            
-            boxColor := (btnPath != "") ? btnColor : COLOR_STEEL_BLUE
-            boxCtrl := ShortcutMenuGui.AddText("x" . boxX . " y" . boxY . " w" . GlobalBoxWidth . " h" . GlobalBoxHeight . " Background" . boxColor . " Center +0x200 +0x0100 c" . COLOR_OFF_WHITE, "")
-            
-            boxCtrl.Row := currentRow
-            boxCtrl.Col := currentCol
+
+            ; Instantiates picture control placeholder to house rendered bitmap pill button
+            boxCtrl := ShortcutMenuGui.Add("Pic", "x" . boxX . " y" . boxY . " w" . GlobalBoxWidth . " h" . GlobalBoxHeight . " +0x0100", "")
+
+            ; Binds unique key namespace property directly to control object for click/drag event tracking
             boxCtrl.Key := slotKey
-            
-            SetButtonTextAndFont(boxCtrl, btnName)
-            BoxControls[slotKey] := boxCtrl
+
+            SetButtonTextAndFont(boxCtrl, btnName)                        ; Renders bitmap text/color onto pill control
+            BoxControls[slotKey] := boxCtrl                              ; Caches control object handle in global BoxControls map
         }
     }
 
+    ; Displays shortcut grid menu GUI overlay without capturing window focus and enforces topmost Z-order status
     ShortcutMenuGui.Show("x" . TopMenu_X . " y" . TopMenu_Y . " w" . TopMenu_W . " h" . TopMenu_H . " NoActivate")
     WinSetAlwaysOnTop(1, "ahk_id " . ShortcutMenuGui.Hwnd)
-
-    ; Initialize the Drag-Delete Zone UI
-    DeleteZoneGui := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x20")
-    DeleteZoneGui.BackColor := COLOR_BACKGROUND
-    DeleteZoneCtrl := DeleteZoneGui.AddText("x0 y0 w" . GlobalBoxWidth . " h" . GlobalBoxHeight . " Background" . COLOR_RED . " Center +0x200 c" . COLOR_OFF_WHITE, "REMOVE")
-    DeleteZoneCtrl.Key := "DELETE_ZONE"
 }
 
 ; ==============================================================================
@@ -681,29 +709,29 @@ InitializeShortcutMenu() {
 ; ==============================================================================
 InitializeAuxMenu() {
     global AuxMenuGui
+    
+    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     AuxMenuGui := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x08000000")
     MaskColor := COLOR_BACKGROUND 
-    AuxMenuGui.BackColor := MaskColor
+    AuxMenuGui.BackColor := MaskColor                                   ; Applies solid background color mask
 
+    ; Calculates scaled diameter dimensions and pad spacing for vector indicator dots
     DotSize := Round(24 * ScaleMultiplier)
     AuxPad  := Round(12 * ScaleMultiplier)
-    TotalW  := (DotSize * 3) + (AuxPad * 2)
+    TotalW  := (DotSize * 3) + (AuxPad * 2)                             ; Computes total bounding width for three-dot array
 
-    ; 1. Red Dot (Kill Switch / Exit App)
-    KillSwitchBtn := AuxMenuGui.AddText("x0 y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100")
-    KillSwitchBtn.Key := "SYS_KILL"
+    ; --- 1. RED DOT (KILL SWITCH / EXIT APP) ---
+    AuxMenuGui.AddText("x0 y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_KILL"
 
-    ; 2. Blue Dot (Window Viewport Snapper)
-    ResetLayoutBtn := AuxMenuGui.AddText("x" . (DotSize + AuxPad) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100")
-    ResetLayoutBtn.Key := "SYS_SNAP"
+    ; --- 2. BLUE DOT (WINDOW VIEWPORT SNAPPER) ---
+    AuxMenuGui.AddText("x" . (DotSize + AuxPad) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_SNAP"
 
-    ; 3. Gold Dot (Desktop Icon Matrix Realignment)
-    IconSnapBtn := AuxMenuGui.AddText("x" . ((DotSize * 2) + (AuxPad * 2)) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100")
-    IconSnapBtn.Key := "SYS_ICONS"
+    ; --- 3. GOLD DOT (DESKTOP ICON MATRIX REALIGNMENT) ---
+    AuxMenuGui.AddText("x" . ((DotSize * 2) + (AuxPad * 2)) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_ICONS"
 
-    ; Position it at your exact blueprint coordinates
+    ; Displays overlay window at blueprint coordinates without capturing OS window focus
     AuxMenuGui.Show("x15 y40 w" . (TotalW + 20) . " h" . (DotSize + 20) . " NoActivate")
-    WinSetTransColor(MaskColor, AuxMenuGui)
+    WinSetTransColor(MaskColor, AuxMenuGui)                             ; Applies transparency mask key to make empty panel areas click-through
 
     ; ==============================================================================
     ; GDI+ VECTOR PAINTING ROUTINE
@@ -717,22 +745,22 @@ InitializeAuxMenu() {
     DllCall("gdiplus.dll\GdipCreateFromHDC", "Ptr", hdc, "Ptr*", &pGraphics:=0)
     DllCall("gdiplus.dll\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)
 
-    ; Paint RED
+    ; --- PAINT RED VECTOR DOT ---
     ColorRedARGB := 0xFFFF0000 
     DllCall("gdiplus.dll\GdipCreateSolidFill", "UInt", ColorRedARGB, "Ptr*", &pBrushRed:=0)
     DllCall("gdiplus.dll\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrushRed, "Float", 0, "Float", 0, "Float", DotSize, "Float", DotSize)
 
-    ; Paint BLUE
+    ; --- PAINT BLUE VECTOR DOT ---
     ColorBlueARGB := 0xFF0000FF 
     DllCall("gdiplus.dll\GdipCreateSolidFill", "UInt", ColorBlueARGB, "Ptr*", &pBrushBlue:=0)
     DllCall("gdiplus.dll\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrushBlue, "Float", DotSize + AuxPad, "Float", 0, "Float", DotSize, "Float", DotSize)
 
-    ; Paint GOLD
+    ; --- PAINT GOLD VECTOR DOT ---
     ColorGoldARGB := 0xFFFFAA00 
     DllCall("gdiplus.dll\GdipCreateSolidFill", "UInt", ColorGoldARGB, "Ptr*", &pBrushGold:=0)
     DllCall("gdiplus.dll\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrushGold, "Float", (DotSize * 2) + (AuxPad * 2), "Float", 0, "Float", DotSize, "Float", DotSize)
 
-    ; GDI+ Cleanup
+    ; --- GDI+ CLEANUP ---
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushRed)
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushBlue)
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushGold)
@@ -746,73 +774,78 @@ InitializeAuxMenu() {
 InitializeStatsMenu() {
     global StatsGui, StatsReadout, ActiveColorBar, CurrentSelection, SelectedDrive
     
+    ; Calculates horizontal placement based on screen width minus scaled telemetry reservation
     StatsReservation := Round(510 * ScaleMultiplier)
     StatsX := ScreenWidth - StatsReservation + Round(40 * ScaleMultiplier)
     StatsY := 0
     
+    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     StatsGui := Gui("-Caption +AlwaysOnTop +ToolWindow +E0x08000000")
-    StatsGui.BackColor := COLOR_BACKGROUND
+    StatsGui.BackColor := COLOR_BACKGROUND                              ; Applies solid black canvas background
     
-    StatsGui.SetFont("s24 norm", "Impact")
-    StatsReadout := StatsGui.AddText("w200 h35 c" . COLOR_OFF_WHITE, "")
+    ; --- TELEMETRY VALUE READOUT & ACCENT BAR ---
+    StatsGui.SetFont("s24 norm", "Impact")                              ; Sets enlarged Impact typography for numeric telemetry readouts
+    StatsReadout := StatsGui.AddText("w200 h35 c" . COLOR_OFF_WHITE, "") ; Instantiates primary telemetry text readout control
     
-    ActiveColorBar := StatsGui.AddText("y+2 w200 h6 Background" . COLOR_RED, "")
+    ActiveColorBar := StatsGui.AddText("y+2 w200 h6 Background" . COLOR_RED, "") ; Instantiates 6px indicator bar showing mode accent color
     
-    StatsGui.SetFont("s10", "Arial")
+    ; --- TELEMETRY MODE SELECTOR BUTTONS ---
+    StatsGui.SetFont("s10", "Arial")                                    ; Reverts font scale for square selector button targets
     
-    CpuBtn := StatsGui.AddText("y+10 w15 h15 Background" . COLOR_RED . " +0x0100", "")
-    CpuBtn.Key := "STAT_CPU"
+    StatsGui.AddText("y+10 w15 h15 Background" . COLOR_RED . " +0x0100", "").Key := "STAT_CPU"   ; Binds STAT_CPU namespace key
+    StatsGui.AddText("x+5 w15 h15 Background" . COLOR_BLUE . " +0x0100", "").Key := "STAT_RAM"  ; Binds STAT_RAM namespace key
+    StatsGui.AddText("x+5 w15 h15 Background" . COLOR_GOLD . " +0x0100", "").Key := "STAT_NET"  ; Binds STAT_NET namespace key
     
-    RamBtn := StatsGui.AddText("x+5 w15 h15 Background" . COLOR_BLUE . " +0x0100", "")
-    RamBtn.Key := "STAT_RAM"
-    
-    NetBtn := StatsGui.AddText("x+5 w15 h15 Background" . COLOR_GOLD . " +0x0100", "")
-    NetBtn.Key := "STAT_NET"
-    
+    ; Iterates through system drive letters to generate interactive drive space monitors
     Loop Parse, DriveGetList() {
-        blk := StatsGui.AddText("x+5 w15 h15 Background" . COLOR_MUTED_GREEN . " +0x0100", "")
-        blk.Key := "STAT_DRIVE_" . A_LoopField
+        StatsGui.AddText("x+5 w15 h15 Background" . COLOR_MUTED_GREEN . " +0x0100", "").Key := "STAT_DRIVE_" . A_LoopField ; Binds dynamic STAT_DRIVE_X namespace key
     }
     
-    UpdateStats()
-    StatsGui.Show("x" . StatsX . " y" . StatsY . " NoActivate")
-    SetTimer(UpdateStats, 3000)
+    ; --- REFRESH LOOP ---
+    UpdateStats()                                                       ; Performs immediate WMI telemetry evaluation and UI render
+    StatsGui.Show("x" . StatsX . " y" . StatsY . " NoActivate")         ; Displays telemetry panel GUI without capturing window focus
+    SetTimer(UpdateStats, 3000)                                         ; Registers 3000ms asynchronous polling cycle to sample system metrics
 }
 
 ; ==============================================================================
-; UTILITY: FORCE LAYER TO BOTTOM OF STACK
+; UTILITY: CANVAS Z-ORDER MANAGEMENT
 ; ==============================================================================
 SendInterfaceToBottom() {
     if (MainGuiHwnd) {
+        ; Issues user32 SetWindowPos DllCall (HWND_BOTTOM = 1) to push canvas underneath active application windows
         DllCall("SetWindowPos", "ptr", MainGuiHwnd, "ptr", 1, "int", 0, "int", 0, "int", 0, "int", 0, "uint", 0x0013)
     }
 }
 
 ; ==============================================================================
-; INTERACTION HANDLERS & OPERATIONS
+; ACTIVE APPLICATION TRACKER (VIEWPORT FOCUS HOOK)
 ; ==============================================================================
-~LButton::TrackActiveApp()
+~LButton::TrackActiveApp()                                              ; Low-level pass-through mouse click hook caching active application handles
 
 TrackActiveApp() {
     global LastActiveAppHWND
-    currentActive := WinExist("A")
+    currentActive := WinExist("A")                                      ; Queries native OS handle for currently active window
     
+    ; Ignores internal LCARS interface windows and system desktop workers to avoid losing active viewport target
     if (currentActive && currentActive != MainGuiHwnd && currentActive != AuxMenuGui && currentActive != ShortcutMenuGui.Hwnd && (!StatsGui || currentActive != StatsGui.Hwnd) && (!ClockGui || currentActive != ClockGui.Hwnd) && (!volGui || currentActive != volGui.Hwnd) && (!LCARS_DockGui || currentActive != LCARS_DockGui.Hwnd)) {
         try {
-            winClass := WinGetClass("ahk_id " . currentActive)
+            winClass := WinGetClass("ahk_id " . currentActive)          ; Queries window class name
             if (winClass != "Shell_TrayWnd" && winClass != "Progman" && winClass != "WorkerW") {
-                LastActiveAppHWND := currentActive
+                LastActiveAppHWND := currentActive                     ; Caches active window HWND for viewport snapper recalibration
             }
         }
     }
 }
 
+; ==============================================================================
+; GLOBAL MOUSE EVENT INTERCEPTORS (INPUT MESSAGE POOL)
+; ==============================================================================
 WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
-    global SourceBoxCtrl, DragStartX, DragStartY, IsDraggingState, CurrentSelection, SelectedDrive
-    clickedCtrl := GuiCtrlFromHwnd(hwnd)
+    global SourceBoxCtrl, DragStartX, DragStartY, CurrentSelection, SelectedDrive
+    clickedCtrl := GuiCtrlFromHwnd(hwnd)                                ; Resolves target GUI control handle from click screen coordinates
     
     if (clickedCtrl && clickedCtrl.HasProp("Key")) {
-        ; Handle telemetry engine routing safely
+        ; --- 1. HANDLE TELEMETRY SELECTORS (STAT_* Namespace) ---
         if (SubStr(clickedCtrl.Key, 1, 5) == "STAT_") {
             targetStat := SubStr(clickedCtrl.Key, 6)
             barColor := COLOR_RED
@@ -831,131 +864,118 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
                 else if (CurrentSelection == "NET")
                     barColor := COLOR_GOLD
             }
-            ActiveColorBar.Opt("Background" . barColor)
+            ActiveColorBar.Opt("Background" . barColor)                 ; Shifts telemetry bar accent color
             ActiveColorBar.Redraw()
-            UpdateStats()
+            UpdateStats()                                              ; Triggers immediate WMI value refresh
             return 0
         }
 
-        ; Handle system three-dot execution matrix
+        ; --- 2. HANDLE VECTOR COMMAND BUTTONS (SYS_* Namespace) ---
         if (clickedCtrl.Key == "SYS_KILL") {
-            ExitApp() 
+            ExitApp()                                                  ; Triggers global script termination
             return 0  
         }
         if (clickedCtrl.Key == "SYS_SNAP") {
-            ForceViewportRecalibration() 
+            ForceViewportRecalibration()                               ; Recalibrates target window boundaries to active viewport
             return 0  
         }
         if (clickedCtrl.Key == "SYS_ICONS") {
-            AlignDesktopIcons() 
+            AlignDesktopIcons()                                        ; Re-aligns desktop matrix icons adjacent to sidebar
             return 0
         }
         
-        ; Handle Top Menu Grid interception setup
-        SourceBoxCtrl := clickedCtrl
-        IsDraggingState := false
+        ; --- 3. SETUP DRAG-AND-DROP INTERCEPTION FOR SHORTCUT GRID ---
+        SourceBoxCtrl := clickedCtrl                                   ; Caches origin control object for move evaluation
         CoordMode("Mouse", "Screen")
-        MouseGetPos(&DragStartX, &DragStartY)
-        SetTimer(CheckDragDelay, -180)
-    }
-}
-
-CheckDragDelay() {
-    global SourceBoxCtrl, DeleteZoneGui, DeleteZoneCtrl, IsDraggingState
-    if (SourceBoxCtrl && GetKeyState("LButton", "P")) {
-        IsDraggingState := true
-        srcPath := IniRead(IniFilePath, "Shortcuts", SourceBoxCtrl.Key . "_Path", "")
-        if (srcPath != "") {
-            DeleteZoneCtrl.SetFont("s20 norm", "Impact") 
-            DeleteZoneGui.Show("x0 y0 w" . GlobalBoxWidth . " h" . GlobalBoxHeight . " NoActivate")
-        }
+        MouseGetPos(&DragStartX, &DragStartY)                          ; Stores mouse origin coordinates to detect drag gestures
     }
 }
 
 WM_LBUTTONUP(wParam, lParam, msg, hwnd) {
-    global SourceBoxCtrl, DragStartX, DragStartY, DeleteZoneGui, IsDraggingState
-    
-    SetTimer(CheckDragDelay, 0)
-    if (DeleteZoneGui)
-        DeleteZoneGui.Hide()
+    global SourceBoxCtrl, DragStartX, DragStartY
     
     if (!SourceBoxCtrl)
         return
         
     CoordMode("Mouse", "Screen")
     MouseGetPos(&currentX, &currentY)
-    moveThreshold := 8 
+    moveThreshold := 8                                                 ; Defines pixel displacement threshold distinguishing clicks from drags
     
     srcCtrl := SourceBoxCtrl
-    SourceBoxCtrl := "" 
+    SourceBoxCtrl := ""                                                ; Clears source box control buffer
     
-    isClickGesture := (Abs(currentX - DragStartX) < moveThreshold && Abs(currentY - DragStartY) < moveThreshold && !IsDraggingState)
+    isClickGesture := (Abs(currentX - DragStartX) < moveThreshold && Abs(currentY - DragStartY) < moveThreshold)
     
+    ; Execute application launch if movement stayed within click threshold
     if (isClickGesture) {
         ExecuteShortcutLaunch(srcCtrl)
         return
     }
     
-    if (currentX >= 0 && currentX <= GlobalBoxWidth && currentY >= 0 && currentY <= GlobalBoxHeight) {
-        DeleteShortcutData(srcCtrl)
-        return
-    }
-    
+    ; Resolve target box control handle under release point
     releasedHwnd := DllCall("user32.dll\WindowFromPoint", "Int64", GetMousePosInt64(), "Ptr")
     targetCtrl := GuiCtrlFromHwnd(releasedHwnd)
     
     if (!targetCtrl || !targetCtrl.HasProp("Key"))
         return
         
-    if (srcCtrl.Key == targetCtrl.Key) {
-        CycleBoxColor(srcCtrl)
-        return
-    }
-    
+    ; Swap/move shortcut data if dropped onto a different valid grid slot
     if (srcCtrl.Key != targetCtrl.Key) {
         MoveShortcutData(srcCtrl, targetCtrl)
         return
+    }
+}
+    
+WM_RBUTTONUP(wParam, lParam, msg, hwnd) {
+    clickedCtrl := GuiCtrlFromHwnd(hwnd)
+    if (clickedCtrl && clickedCtrl.HasProp("Key")) {
+        if (SubStr(clickedCtrl.Key, 1, 5) == "Slot_") {
+            ; --- CTRL + RIGHT CLICK = DELETE SHORTCUT ---
+            if GetKeyState("Control", "P") {
+                DeleteShortcutData(clickedCtrl)
+                return 0
+            }
+            
+            ; --- ALT + RIGHT CLICK = CYCLE COLOR PALETTE ---
+            if GetKeyState("Alt", "P") {
+                CycleBoxColor(clickedCtrl)
+                return 0
+            }
+            
+            ; Suppress plain right-click to prevent accidental execution
+            return 0
+        }
     }
 }
 
 GetMousePosInt64() {
     CoordMode("Mouse", "Screen")
     MouseGetPos(&mx, &my)
-    return (my << 32) | (mx & 0xFFFFFFFF)
+    return (my << 32) | (mx & 0xFFFFFFFF)                              ; Packs 32-bit mouse coordinates into 64-bit integer for WindowFromPoint
 }
 
-CalculateFontSize(text, maxWidth, baseSize := 16, fontName := "Impact") {
-    fontSize := baseSize
-    loop {
-        dummy := Gui()
-        dummy.SetFont("s" . fontSize . " norm", fontName)
-        txtCtrl := dummy.AddText("", text)
-        txtCtrl.GetPos(,, &measuredWidth)
-        dummy.Destroy()
-        if (measuredWidth <= maxWidth || fontSize <= 8) {
-            return fontSize
-        }
-        fontSize--
-    }
-}
-
+; ==============================================================================
+; SHORTCUT GRID OPERATIONS & INI SERIALIZATION
+; ==============================================================================
 SetButtonTextAndFont(ctrlObj, text) {
-    global MenuFontSize
-    if (text == "") {
-        ctrlObj.SetFont("s" . MenuFontSize)
-        ctrlObj.Text := ""
-        return
+    currentColor := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_Color", COLOR_BACKGROUND)
+    currentTextColor := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_TextColor", COLOR_BACKGROUND)
+    
+    ; Default empty slots to pure black canvas color
+    if (text == "" && IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_Path", "") == "") {
+        currentColor := COLOR_BACKGROUND
+        currentTextColor := COLOR_BACKGROUND
     }
-    safetyMargin := Round(8 * ScaleMultiplier)
-    maxTextWidth := GlobalBoxWidth - safetyMargin
-    optimalSize := CalculateFontSize(text, maxTextWidth, MenuFontSize, "Impact")
-    ctrlObj.SetFont("s" . optimalSize)
-    ctrlObj.Text := text
+    
+    ctrlObj.Opt("+Background" . COLOR_BACKGROUND)
+    hBmp := CreatePillBitmap(currentColor, text, currentTextColor)      ; Generates dynamic GDI+ 32-bit bitmap pill
+    ctrlObj.Value := "HBITMAP:" . hBmp
 }
 
 ExecuteShortcutLaunch(ctrlObj) {
     currentPath := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_Path", "")
     
+    ; Prompt for new shortcut configuration if target slot is empty
     if (currentPath == "") {
         nameBox := InputBox("Enter LCARS button display label:", "LCARS Terminal - New Shortcut")
         if (nameBox.Result != "OK" || nameBox.Value == "")
@@ -964,18 +984,16 @@ ExecuteShortcutLaunch(ctrlObj) {
         if (pathBox.Result != "OK" || pathBox.Value == "")
             return
             
-        IniWrite(nameBox.Value, IniFilePath, "Shortcuts", ctrlObj.Key . "_Name")
-        IniWrite(pathBox.Value, IniFilePath, "Shortcuts", ctrlObj.Key . "_Path")
-        IniWrite(COLOR_GOLD,     IniFilePath, "Shortcuts", ctrlObj.Key . "_Color")
-        
+        IniWrite(nameBox.Value,    IniFilePath, "Shortcuts", ctrlObj.Key . "_Name")
+        IniWrite(pathBox.Value,    IniFilePath, "Shortcuts", ctrlObj.Key . "_Path")
+        IniWrite(COLOR_GOLD,       IniFilePath, "Shortcuts", ctrlObj.Key . "_Color")
+        IniWrite(COLOR_BACKGROUND, IniFilePath, "Shortcuts", ctrlObj.Key . "_TextColor") ; Defaults to solid black text
+
         SetButtonTextAndFont(ctrlObj, nameBox.Value)
-        ctrlObj.Opt("Background" . COLOR_GOLD)
-        ctrlObj.Redraw()
     } 
     else {
         try {
-            ; Passing "Max" in parameter 3 tells Windows to launch the window maximized
-            Run(currentPath, , "Max")
+            Run(currentPath, , "Max")                                  ; Launches target executable maximized
         } catch {
             MsgBox("System Error: Unable to launch target execution path.", "LCARS Command Failure", "Iconx")
         }
@@ -986,7 +1004,8 @@ MoveShortcutData(srcCtrl, targetCtrl) {
     srcName  := IniRead(IniFilePath, "Shortcuts", srcCtrl.Key . "_Name", "")
     srcPath  := IniRead(IniFilePath, "Shortcuts", srcCtrl.Key . "_Path", "")
     srcColor := IniRead(IniFilePath, "Shortcuts", srcCtrl.Key . "_Color", COLOR_GOLD)
-    
+    srcTxt   := IniRead(IniFilePath, "Shortcuts", srcCtrl.Key . "_TextColor", COLOR_BACKGROUND)
+   
     targetPath := IniRead(IniFilePath, "Shortcuts", targetCtrl.Key . "_Path", "")
     if (targetPath != "") {
         MsgBox("Target cell is already occupied. Rearrangement aborted.", "LCARS Buffer Conflict", "Iconi")
@@ -996,20 +1015,24 @@ MoveShortcutData(srcCtrl, targetCtrl) {
     if (srcPath == "")
         return
         
-    IniWrite(srcName, IniFilePath, "Shortcuts", targetCtrl.Key . "_Name")
-    IniWrite(srcPath, IniFilePath, "Shortcuts", targetCtrl.Key . "_Path")
+    ; Write shortcut properties to new INI target slot
+    IniWrite(srcName,  IniFilePath, "Shortcuts", targetCtrl.Key . "_Name")
+    IniWrite(srcPath,  IniFilePath, "Shortcuts", targetCtrl.Key . "_Path")
     IniWrite(srcColor, IniFilePath, "Shortcuts", targetCtrl.Key . "_Color")
+    IniWrite(srcTxt,   IniFilePath, "Shortcuts", targetCtrl.Key . "_TextColor")
     
+    ; Purge shortcut properties from old INI source slot
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Name")
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Path")
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Color")
+    IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_TextColor")
     
+    ; Re-render both source and destination pill bitmaps
     SetButtonTextAndFont(targetCtrl, srcName)
-    targetCtrl.Opt("Background" . srcColor)
+    SetButtonTextAndFont(srcCtrl, "")
     targetCtrl.Redraw()
     
-    SetButtonTextAndFont(srcCtrl, "")
-    srcCtrl.Opt("Background" . COLOR_STEEL_BLUE)
+    srcCtrl.Opt("Background" . COLOR_BACKGROUND)
     srcCtrl.Redraw()
 }
 
@@ -1021,12 +1044,15 @@ DeleteShortcutData(srcCtrl) {
         return 
     }
     
+    ; Purge shortcut properties from INI configuration file
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Name")
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Path")
     IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_Color")
+    IniDelete(IniFilePath, "Shortcuts", srcCtrl.Key . "_TextColor")
     
+    ; Clear control display and reset bitmap to empty background canvas
     SetButtonTextAndFont(srcCtrl, "")
-    srcCtrl.Opt("Background" . COLOR_STEEL_BLUE)
+    srcCtrl.Opt("Background" . COLOR_BACKGROUND)
     srcCtrl.Redraw()
 }
 
@@ -1036,26 +1062,58 @@ CycleBoxColor(ctrlObj) {
         return
         
     currentColor := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_Color", COLOR_GOLD)
-    colorPalette := [COLOR_GOLD, COLOR_ORANGE, COLOR_PEACH, COLOR_LILAC, COLOR_CORNFLOWER, COLOR_LIGHT_BLUE, COLOR_MUTED_GREEN]
-	
-    nextColor := colorPalette[1]
+    currentTextColor := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_TextColor", COLOR_BACKGROUND)
     
-    Loop colorPalette.Length {
-        if (colorPalette[A_Index] == currentColor) {
-            nextIndex := (A_Index == colorPalette.Length) ? 1 : A_Index + 1
-            nextColor := colorPalette[nextIndex]
+    colorPalette := [COLOR_GOLD, COLOR_ORANGE, COLOR_PEACH, COLOR_LILAC, COLOR_CORNFLOWER, COLOR_LIGHT_BLUE, COLOR_MUTED_GREEN]
+    
+    ; Construct complete 3-Tier State Combination Table
+    states := []
+    
+    ; Tier 1: Colored Buttons + Black Text
+    for col in colorPalette {
+        states.Push({bg: col, txt: COLOR_BACKGROUND})
+    }
+    
+    ; Tier 2: Colored Buttons + Off-White Text
+    for col in colorPalette {
+        states.Push({bg: col, txt: COLOR_OFF_WHITE})
+    }
+    
+    ; Tier 3: Black Buttons + Colored Text
+    for col in colorPalette {
+        states.Push({bg: COLOR_BACKGROUND, txt: col})
+    }
+    states.Push({bg: COLOR_BACKGROUND, txt: COLOR_OFF_WHITE})
+    
+    ; Find current combination index
+    currentIndex := 1
+    for idx, state in states {
+        if (state.bg == currentColor && state.txt == currentTextColor) {
+            currentIndex := idx
             break
         }
     }
     
-    IniWrite(nextColor, IniFilePath, "Shortcuts", ctrlObj.Key . "_Color")
-    ctrlObj.Opt("Background" . nextColor)
-    ctrlObj.Redraw()
+    ; Advance to next combination index (loops back to 1)
+    nextIndex := (currentIndex >= states.Length) ? 1 : currentIndex + 1
+    nextState := states[nextIndex]
+    
+    ; Write updated background and text color assignments to INI configuration file
+    IniWrite(nextState.bg,  IniFilePath, "Shortcuts", ctrlObj.Key . "_Color")
+    IniWrite(nextState.txt, IniFilePath, "Shortcuts", ctrlObj.Key . "_TextColor")
+    
+    ; Re-render pill control bitmap
+    btnName := IniRead(IniFilePath, "Shortcuts", ctrlObj.Key . "_Name", "")
+    SetButtonTextAndFont(ctrlObj, btnName)
 }
 
+; ==============================================================================
+; SYSTEM ACTIONS & DESKTOP MANAGEMENT
+; ==============================================================================
 ForceViewportRecalibration() {
     global LastActiveAppHWND
     
+    ; Acquire secondary valid window target if cached handle is invalid
     if (!LastActiveAppHWND || !WinExist("ahk_id " . LastActiveAppHWND)) {
         winList := WinGetList()
         for currentHWND in winList {
@@ -1076,7 +1134,8 @@ ForceViewportRecalibration() {
     
     if (!LastActiveAppHWND)
         return
-	
+    
+    ; Restore target window and force viewport boundaries using user32 MoveWindow
     WinRestore("ahk_id " . LastActiveAppHWND)
     DllCall("user32.dll\MoveWindow", "Int", LastActiveAppHWND, "Int", ActiveWinX - Round(20 * ScaleMultiplier), "Int", ActiveWinY - Round(3 * ScaleMultiplier), "Int", ActiveWinW + Round(20 * ScaleMultiplier), "Int", ActiveWinH + Round(10 * ScaleMultiplier), "Int", 1)
 }
@@ -1093,7 +1152,7 @@ AlignDesktopIcons() {
         return
     }
     
-    iconCount := SendMessage(0x1004, 0, 0, LV)
+    iconCount := SendMessage(0x1004, 0, 0, LV)                         ; Queries SysListView32 control for total desktop icon count
     
     startX := ActiveWinX + 20
     startY := ActiveWinY + 20
@@ -1103,10 +1162,11 @@ AlignDesktopIcons() {
     curX := startX
     curY := startY
     
+    ; Reposition desktop icons sequentially adjacent to sidebar workspace origin
     Loop iconCount {
         idx := A_Index - 1
         lParam := (curY << 16) | (curX & 0xFFFF)
-        SendMessage(0x100F, idx, lParam, LV)
+        SendMessage(0x100F, idx, lParam, LV)                            ; Issues LVM_SETITEMPOSITION message
         
         curY += spacingY
         if (curY > (ScreenHeight - spacingY - 40)) {
@@ -1115,16 +1175,16 @@ AlignDesktopIcons() {
         }
     }
 }
-
 ; ==============================================================================
-; TELEMETRY SAMPLING ENGINE (WMI REFRESH)
+; TELEMETRY SAMPLING ENGINE (PROTECTED WMI REFRESH)
 ; ==============================================================================
 UpdateStats(*) {
     global CurrentSelection, SelectedDrive, StatsReadout
-    if (!StatsReadout)
+    if (!StatsReadout)                                                 ; Aborts update if text readout handle is invalid
         return
 
     val := ""
+    ; Evaluate active telemetry selection state and format readout string
     if (CurrentSelection == "CPU")
         val := LoadPercentage("CPU") . "% CPU"
     else if (CurrentSelection == "RAM")
@@ -1134,73 +1194,90 @@ UpdateStats(*) {
     else if (CurrentSelection == "DRIVE")
         val := SelectedDrive . ": " . Round(100 - (DriveGetSpaceFree(SelectedDrive . ":") / DriveGetCapacity(SelectedDrive . ":") * 100)) . "% USED"
     
-    StatsReadout.Text := val
+    StatsReadout.Text := val                                           ; Updates telemetry readout control string
 }
 
 LoadPercentage(type) {
+    ; Connects to local WMI service repository via SWbemLocator COM Object
     static objWMI := ComObject("WbemScripting.SWbemLocator").ConnectServer(".", "root\cimv2")
     
+    ; --- 1. CPU LOAD SAMPLING ---
     if (type == "CPU") {
         try {
             items := objWMI.ExecQuery("Select LoadPercentage from Win32_Processor")._NewEnum
             while items(&item, &i)
-                return item.LoadPercentage
+                return item.LoadPercentage                            ; Returns processor utilization percentage
+        } catch {
+            return 0                                                   ; Safe fallback on WMI query failure
         }
     }
+    
+    ; --- 2. PHYSICAL RAM SAMPLING ---
     if (type == "RAM") {
-        mem := Buffer(64, 0), NumPut("UInt", 64, mem, 0)
-        DllCall("GlobalMemoryStatusEx", "Ptr", mem)
-        return NumGet(mem, 4, "UInt") 
+        try {
+            mem := Buffer(64, 0), NumPut("UInt", 64, mem, 0)
+            DllCall("GlobalMemoryStatusEx", "Ptr", mem)                 ; Queries system memory status via user32 DllCall
+            return NumGet(mem, 4, "UInt")                              ; Extracts dwMemoryLoad percentage value
+        } catch {
+            return 0                                                   ; Safe fallback on API failure
+        }
     }
+    
+    ; --- 3. NETWORK BANDWIDTH SAMPLING ---
     if (type == "NET") {
         try {
             items := objWMI.ExecQuery("Select BytesTotalPerSec from Win32_PerfFormattedData_Tcpip_NetworkInterface")._NewEnum
             totalNet := 0
             while items(&item, &i) {
-                totalNet += item.BytesTotalPerSec
+                totalNet += item.BytesTotalPerSec                     ; Aggregates total throughput across active network adapters
             }
             
-            maxCapacity := 12500000 
+            maxCapacity := 12500000                                    ; Baseline threshold (100Mbps baseline estimate in bytes/sec)
             percent := Round((totalNet / maxCapacity) * 100)
-            return Min(100, percent) 
+            return Min(100, percent)                                   ; Clamps throughput utilization percentage to 100% max
+        } catch {
+            return 0                                                   ; Safe fallback on WMI performance counter failure
         }
     }
     return 0
 }
 
 ; ==============================================================================
-; WINDOW MANAGER & VIEWPORT SNAP ENGINE FUNCTIONS
+; WINDOW MANAGER & VIEWPORT SNAP ENGINE
 ; ==============================================================================
 ShellEvent(wParam, lParam, *) {
+    ; Monitors shell hook events: HSHELL_WINDOWCREATED (1), HSHELL_WINDOWDESTROYED (2), 
+    ; HSHELL_ACTIVATESHELLWINDOW (4), or HSHELL_RUDEAPPACTIVATED (32772)
     if (wParam = 1 || wParam = 2 || wParam = 4 || wParam = 32772) {
-        SetTimer(RefreshTaskbarDock, -1)
+        SetTimer(RefreshTaskbarDock, -1)                               ; Triggers asynchronous sidebar dock re-indexing cycle
         Sleep(100) 
-        EnforceBoundaries()
-        SendInterfaceToBottom()
+        EnforceBoundaries()                                            ; Forces active window viewport snap evaluation
+        SendInterfaceToBottom()                                        ; Re-asserts canvas layer HWND_BOTTOM placement
     }
 }
 
 WatchdogCheck() {
-    EnforceBoundaries()
+    EnforceBoundaries()                                                ; Evaluates active window boundaries every 500ms
     if (AuxMenuGui) {
         try {
-            WinSetAlwaysOnTop(1, "ahk_id " . AuxMenuGui.Hwnd)
+            WinSetAlwaysOnTop(1, "ahk_id " . AuxMenuGui.Hwnd)          ; Maintains vector three-dot overlay topmost layer status
         }
     }
 }
 
 EnforceBoundaries() {
-    activeHWND := WinActive("A")
+    activeHWND := WinActive("A")                                       ; Queries active foreground application window handle
     if (!activeHWND)
         return
         
     try {
-        winClass := WinGetClass("ahk_id " . activeHWND)
-        winTitle := WinGetTitle("ahk_id " . activeHWND)
+        winClass := WinGetClass("ahk_id " . activeHWND)                ; Retrieves active window class name
+        winTitle := WinGetTitle("ahk_id " . activeHWND)                ; Retrieves active window title string
     } catch {
         return 
     }
     
+    ; Exclude system desktop components, core Windows shell frames, and internal LCARS GUI overlays
     if (winClass = "Shell_TrayWnd" || winClass = "Progman" || winClass = "WorkerW" 
         || winClass = "AutoHotkeyGUI" || winClass = "Windows.UI.Core.CoreWindow" 
         || winClass = "XamlExplorerHostIslandWindow" || InStr(winTitle, "Snipping Tool")
@@ -1209,19 +1286,22 @@ EnforceBoundaries() {
     }
     
     try {
-        minMaxState := WinGetMinMax("ahk_id " . activeHWND)
+        minMaxState := WinGetMinMax("ahk_id " . activeHWND)            ; Queries target window maximize/minimize state
     } catch {
         return
     }
 	
+    ; Intercept maximized windows (1) and force snap into target LCARS workspace viewport boundaries
     if (minMaxState = 1) {
-        WinRestore("ahk_id " . activeHWND)
+        WinRestore("ahk_id " . activeHWND)                             ; Restores window to normal state to strip OS border locks
+        ; Issues MoveWindow DllCall to position active viewport flush against LCARS header and sidebar borders
         DllCall("user32.dll\MoveWindow", "Ptr", activeHWND, "Int", ActiveWinX - Round(20 * ScaleMultiplier), "Int", ActiveWinY - Round(3 * ScaleMultiplier), "Int", ActiveWinW + Round(20 * ScaleMultiplier), "Int", ActiveWinH + Round(10 * ScaleMultiplier), "Int", 1)
     }
 }
 
 EnforceLayers() {
     try {
+        ; Enforces HWND_TOPMOST Z-order status across interactive foreground overlays every 500ms
         if (ShortcutMenuGui) {
             WinSetAlwaysOnTop(1, "ahk_id " . ShortcutMenuGui.Hwnd)
         }
@@ -1241,30 +1321,103 @@ EnforceLayers() {
 }
 
 ; ==============================================================================
-; DYNAMIC BITMAP GENERATOR
+; DYNAMIC BITMAP GENERATORS
 ; ==============================================================================
 StrUpper(String) {
-    return Format("{:U}", String)
+    return Format("{:U}", String)                                      ; Helper function converting input string to uppercase
 }
 
 CreateSolidBitmap(HexColor) {
+    ; Extracts individual RGB color byte components from input hexadecimal string
     R := "0x" SubStr(HexColor, 1, 2)
     G := "0x" SubStr(HexColor, 3, 2)
     B := "0x" SubStr(HexColor, 5, 2)
     
+    ; Populates BITMAPINFOHEADER structure buffer (40 bytes header + metrics)
     Bmi := Buffer(44, 0)
-    NumPut("UInt", 40, Bmi, 0) 
-    NumPut("Int", 1, Bmi, 4)    
-    NumPut("Int", 1, Bmi, 8)    
-    NumPut("UShort", 1, Bmi, 12) 
-    NumPut("UShort", 32, Bmi, 14) 
+    NumPut("UInt", 40, Bmi, 0)                                         ; biSize = 40 bytes
+    NumPut("Int", 1, Bmi, 4)                                           ; biWidth = 1 pixel
+    NumPut("Int", 1, Bmi, 8)                                           ; biHeight = 1 pixel
+    NumPut("UShort", 1, Bmi, 12)                                       ; biPlanes = 1
+    NumPut("UShort", 32, Bmi, 14)                                      ; biBitCount = 32-bit color depth
     
     pBits := 0
+    ; Creates a device-independent bitmap (DIB) that applications can write to directly
     hBmd := DllCall("CreateDIBSection", "Ptr", 0, "Ptr", Bmi, "UInt", 0, "PtrP", &pBits, "Ptr", 0, "UInt", 0, "Ptr")
-    NumPut("UInt", (R << 16) | (G << 8) | B, pBits, 0)
-    return hBmd
+    NumPut("UInt", (R << 16) | (G << 8) | B, pBits, 0)                 ; Writes packed RGB pixel bytes to memory pointer
+    return hBmd                                                        ; Returns bitmap handle
 }
 
+; ==============================================================================
+; DYNAMIC GDI+ PILL BITMAP GENERATOR (125x33 CONSTANT GRID)
+; ==============================================================================
+CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
+    w := 125                                                           ; Defines fixed pill canvas width in pixels
+    h := 33                                                            ; Defines fixed pill canvas height in pixels
+
+    ; --- 1. CONVERT HEX COLORS TO ARGB ---
+    bgCol   := "0xFF" . HexColor                                       ; Appends full opacity alpha channel (0xFF) to background hex
+    textCol := "0xFF" . TextColorHex                                   ; Appends full opacity alpha channel (0xFF) to text hex
+
+    ; --- 2. CREATE DEVICE CONTEXTS & 32-BIT DIB SECTION ---
+    hdcScreen := DllCall("GetDC", "Ptr", 0, "Ptr")                     ; Captures primary display screen device context
+    hdcMem    := DllCall("CreateCompatibleDC", "Ptr", hdcScreen, "Ptr") ; Instantiates in-memory memory device context (DC)
+    
+    bi := Buffer(40, 0)
+    NumPut("UInt", 40, "Int", w, "Int", -h, "UShort", 1, "UShort", 32, bi, 0) ; Configures 32-bit top-down DIB header
+    hBitmap := DllCall("CreateDIBSection", "Ptr", hdcScreen, "Ptr", bi, "UInt", 0, "Ptr*", &pBits:=0, "Ptr", 0, "UInt", 0, "Ptr")
+    hOldBmp := DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hBitmap, "Ptr") ; Binds DIB section bitmap to memory DC
+
+    ; --- 3. INITIALIZE GDI+ CANVAS WITH ANTIALIASING ---
+    DllCall("gdiplus\GdipCreateFromHDC", "Ptr", hdcMem, "Ptr*", &pGraphics:=0) ; Instantiates GDI+ graphics engine bound to memory DC
+    DllCall("gdiplus\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)       ; Sets anti-aliased geometry rendering mode
+    DllCall("gdiplus\GdipSetTextRenderingHint", "Ptr", pGraphics, "Int", 4)   ; Sets AntiAliasGridFit text rendering hint
+
+    ; --- 4. DRAW PILL GEOMETRY (FULL ARC END-CAPS) ---
+    DllCall("gdiplus\GdipCreatePath", "Int", 0, "Ptr*", &pPath:=0)     ; Instantiates new GDI+ graphics path object
+    DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", 0, "Float", h, "Float", h, "Float", 90, "Float", 180) ; Left rounded semi-circle cap
+    DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", w - h, "Float", 0, "Float", h, "Float", h, "Float", 270, "Float", 180) ; Right rounded semi-circle cap
+    DllCall("gdiplus\GdipClosePathFigure", "Ptr", pPath)               ; Closes path figure to establish solid enclosed region
+
+    ; --- 5. FILL BACKGROUND PATH ---
+    DllCall("gdiplus\GdipCreateSolidFill", "UInt", bgCol, "Ptr*", &pBrushBg:=0) ; Creates solid ARGB background brush
+    DllCall("gdiplus\GdipFillPath", "Ptr", pGraphics, "Ptr", pBrushBg, "Ptr", pPath) ; Fills pill path geometry with active accent color
+
+    ; --- 6. RENDER CENTERED IMPACT TEXT ---
+    if (TextStr != "") {
+        DllCall("gdiplus\GdipCreateStringFormat", "Int", 0, "UShort", 0, "Ptr*", &pFormat:=0)
+        DllCall("gdiplus\GdipSetStringFormatAlign", "Ptr", pFormat, "Int", 1)     ; Horizontal text alignment: Center
+        DllCall("gdiplus\GdipSetStringFormatLineAlign", "Ptr", pFormat, "Int", 1) ; Vertical text alignment: Center
+
+        DllCall("gdiplus\GdipCreateFontFamilyFromName", "WStr", "Impact", "Ptr", 0, "Ptr*", &pFamily:=0) ; Instantiates Impact font family
+        
+        ; Auto-scale font size down slightly if label string exceeds 10 characters to prevent clipping
+        fontSize := (StrLen(TextStr) > 10) ? 16 : 20
+        DllCall("gdiplus\GdipCreateFont", "Ptr", pFamily, "Float", fontSize, "Int", 0, "Int", 2, "Ptr*", &pFont:=0) ; Instantiates GDI+ font object
+
+        rect := Buffer(16, 0)
+        NumPut("Float", 0, "Float", 1.5, "Float", w, "Float", h, rect) ; Bounding rectangle offset for text rasterization
+
+        DllCall("gdiplus\GdipCreateSolidFill", "UInt", textCol, "Ptr*", &pBrushText:=0) ; Creates solid ARGB text brush
+        DllCall("gdiplus\GdipDrawString", "Ptr", pGraphics, "WStr", TextStr, "Int", -1, "Ptr", pFont, "Ptr", rect, "Ptr", pFormat, "Ptr", pBrushText) ; Rasterizes string onto bitmap
+
+        ; Release text rendering resources
+        DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrushText)
+        DllCall("gdiplus\GdipDeleteFont", "Ptr", pFont)
+        DllCall("gdiplus\GdipDeleteFontFamily", "Ptr", pFamily)
+        DllCall("gdiplus\GdipDeleteStringFormat", "Ptr", pFormat)
+    }
+
+    ; --- 7. CLEAN UP GDI+ HANDLES & RETURN BITMAP ---
+    DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrushBg)
+    DllCall("gdiplus\GdipDeletePath", "Ptr", pPath)
+    DllCall("gdiplus\GdipDeleteGraphics", "Ptr", pGraphics)
+    DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hOldBmp)
+    DllCall("DeleteDC", "Ptr", hdcMem)
+    DllCall("ReleaseDC", "Ptr", 0, "Ptr", hdcScreen)
+
+    return hBitmap                                                     ; Returns completed GDI+ 32-bit pill bitmap handle
+}
 ; Keep, used for testing.
 ; Esc::ExitApp
 
@@ -1367,4 +1520,38 @@ CreateSolidBitmap(HexColor) {
 ;      geometry, call volGui.SetFont("s14 bold") immediately before instantiating btnDown and btnUp. 
 ;    * Alignment Preserves: Retain the +0x200 (vertical centering) and Center options in the AddText string 
 ;      so enlarged font glyphs self-center within the existing 48x18 bounding boxes.
+
+; 10. SHORTCUT BUTTON COLOR CYCLING & DELETION
+;    * Modifiers: To avoid accidental layout modifications:
+;      - Ctrl + Right-Click: Triggers DeleteShortcutData() with a confirmation prompt.
+;      - Alt + Right-Click: Cycles through the three-tier color palette via CycleBoxColor().
+;      - Standard Right-Click: Ignored.
+
+; 11. DYNAMIC GDI+ PILL TEXT SCALING
+;    * Vector Rasterization: Shortcut pill labels are rendered dynamically as 32-bit GDI+ bitmaps 
+;      inside CreatePillBitmap(), bypassing standard AHK GUI control font declarations (e.g., MenuFontSize).
+;    * Threshold Scaling: Font sizes are controlled inside CreatePillBitmap() by evaluating label length:
+;      - Short Labels (<=10 chars): Defaults to 20pt Impact font.
+;      - Long Labels (>10 chars): Auto-scales down to 16pt Impact font to prevent end-cap clipping.
+;    * Custom Adjustments: Adjust these point values directly inside CreatePillBitmap() when tweaking 
+;      pill typography or string overflow constraints.
+
+; 12. LOCAL CONTROL HANDLE PRUNING & INLINE BINDING
+;    * Control Assignment Pattern: Controls in AuxMenuGui, StatsGui, and volGui do NOT 
+;      store local variable handles (e.g. CpuBtn, KillSwitchBtn) during instantiation.
+;    * Namespace Chaining: Instead, properties and event bindings are chained directly 
+;      onto the instantiation call (e.g., Gui.AddText(...).Key := "SYS_KILL"). 
+;    * Dynamic Lookups: Sub-routines reference controls dynamically via GUI indexing 
+;      (e.g., volGui["VolText"]) or WM message interceptors checking clickedCtrl.Key.
+
+; 13. COLOR PALETTE EXPANSION RESERVATION
+;    * Structural Color Definitions: The global color palette contains extended LCARS hex 
+;      definitions (e.g., COLOR_SCIENCE_TEAL, COLOR_BURGUNDY, COLOR_EGGPLANT) that are 
+;      intentionally retained for future sub-panel and widget design expansions.
+
+; 14. INI SHORTCUT KEY MAP PRESERVATION
+;    * Grid Control Properties: Shortcut grid controls rely strictly on boxCtrl.Key 
+;      (e.g., "Slot_1_1") for INI serialization. Do NOT attach redundant .Row or .Col 
+;      properties inside InitializeShortcutMenu(), as all matrix placement and drag-and-drop 
+;      actions use the explicit Key namespace.
 ; ==========================================================================================
