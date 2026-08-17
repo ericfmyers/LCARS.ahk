@@ -158,112 +158,120 @@ InitializeLcars() {
     TopMenuGui.BackColor := CHROMA_KEY                             ; Applies global transparency mask color to establish click-through background canvas
     global MainGuiHwnd := TopMenuGui.Hwnd                          ; Caches native window handle of background canvas GUI for layer Z-order management
 
-    ; --- Top Header Frame ---
-    TopMenuX := 0, TopMenuY := 0 ; Defines horizontal and vertical origins for primary top menu header block
-    StatsReservation := Round(510 * ScaleMultiplier) ; Calculates horizontal pixel buffer reserved for top-right telemetry panel
-    TopMenuW := (StaticX + (ScreenWidth - StaticX) - StatsReservation) + Round(40 * ScaleMultiplier) ; Computes scaled total pixel width for primary top menu block
-    TopMenuH := Round(101 * ScaleMultiplier) ; Scales pixel height for primary top menu block
-    TopMenuGui.AddText("x" . TopMenuX . " y" . TopMenuY . " w" . TopMenuW . " h" . TopMenuH . " Background" . COLOR_LILAC) ; Renders primary top header background block in lilac
+    ; --- CURVED STRUCTURAL ELBOW (EXTENDS LOWER WITH ROUNDED BOTTOM-LEFT) ---
+	StatsReservation := Round(510 * ScaleMultiplier)
+    TopMenuW := (StaticX + (ScreenWidth - StaticX) - StatsReservation) + Round(40 * ScaleMultiplier)
 
-    TopMenuX1 := 0, TopMenuY1 := Round(75 * ScaleMultiplier) ; Scales origin coordinates for upper-left secondary header block extension
-    TopMenuW1 := Round(340 * ScaleMultiplier), TopMenuH1 := Round(48 * ScaleMultiplier) ; Scales width and height for upper-left secondary header block
-    TopMenuGui.AddText("x" . TopMenuX1 . " y" . TopMenuY1 . " w" . TopMenuW1 . " h" . TopMenuH1 . " Background" . COLOR_LIGHT_BLUE) ; Renders upper-left secondary header block in light blue
+    ElbowW       := TopMenuW
+    ElbowH       := Round(150 * ScaleMultiplier) ; Extended lower to 270px down the sidebar
+    TopThick     := Round(102 * ScaleMultiplier) ; Matches top horizontal rail
+    SideThick    := Round(126 * ScaleMultiplier)
+    OuterR       := Round(35 * ScaleMultiplier) 
+    InnerR       := Round(25 * ScaleMultiplier) 
+    TopRightR    := OuterR                      
+    BottomLeftR  := Round(20 * ScaleMultiplier)  ; Curves bottom-left of top block inward
 
-    TopMenuXbar := 0, TopMenuYbar := Round(73 * ScaleMultiplier) ; Scales coordinates for horizontal separating line above secondary header
-    TopMenuWbar := Round(140 * ScaleMultiplier), TopMenuHbar := Round(6 * ScaleMultiplier) ; Scales pixel dimensions for upper horizontal separator bar
-    TopMenuGui.AddText("x" . TopMenuXbar . " y" . TopMenuYbar . " w" . TopMenuWbar . " h" . TopMenuHbar . " Background" . COLOR_BACKGROUND) ; Renders upper separator bar in solid background color
+    hElbow := CreateElbowBitmap(ElbowW, ElbowH, TopThick, SideThick, OuterR, InnerR, TopRightR, BottomLeftR, COLOR_LILAC, "", COLOR_BACKGROUND)
+    TopMenuGui.Add("Pic", "x0 y0 w" . ElbowW . " h" . ElbowH . " +BackgroundTrans", "HBITMAP:" . hElbow)
+	
+    ; --- LOWER SIDEBAR RAIL (EXTENDS ABOVE MENU WITH CURVED TOP-LEFT & BOTTOM-LEFT) ---
+	SideBarX2 := 0
+    SideBarY2 := Round(156 * ScaleMultiplier) ; Starts 6px below top elbow
+    SideBarW2 := Round(126 * ScaleMultiplier)
+    SideBarH2 := ScreenHeight - SideBarY2      ; Extends all the way to screen bottom
+    RailTopR  := Round(20 * ScaleMultiplier)  ; Curve on top of the mauve rail
+    RailBotR  := Round(25 * ScaleMultiplier)  ; Curve on very bottom-left of screen
 
+    hRail := CreateRailBitmap(SideBarW2, SideBarH2, RailTopR, RailBotR, COLOR_MAUVE)
+    TopMenuGui.Add("Pic", "x" . SideBarX2 . " y" . SideBarY2 . " w" . SideBarW2 . " h" . SideBarH2 . " +BackgroundTrans", "HBITMAP:" . hRail)
+
+; --- STEEL BLUE FILLER BAR (ROUNDED TOP-LEFT) ---
+    TopBarX := Round(140 * ScaleMultiplier)
+    TopBarY := Round(107 * ScaleMultiplier)
+    TopBarW := Round(200 * ScaleMultiplier)  ; Adjust width if needed to fit gap
+    TopBarH := Round(16 * ScaleMultiplier)   ; Matches height of thin data track row
+    TopBarR := Round(12 * ScaleMultiplier)   ; Top-left round-over radius
+
+    hTopBar := CreateTopBlockBitmap(TopBarW, TopBarH, TopBarR, COLOR_STEEL_BLUE)
+    TopMenuGui.Add("Pic", "x" . TopBarX . " y" . TopBarY . " w" . TopBarW . " h" . TopBarH . " +BackgroundTrans", "HBITMAP:" . hTopBar)
+	
     ; --- Segmented Data Blocks Row ---
-    TopMenuX4 := Round(346 * ScaleMultiplier), TopMenuY4 := Round(107 * ScaleMultiplier) ; Scales position for first segmented header accent block
-    TopMenuW4 := Round(65 * ScaleMultiplier),  TopMenuH4 := Round(16 * ScaleMultiplier)  ; Scales dimensions for first segmented header accent block
-    TopMenuGui.AddText("x" . TopMenuX4 . " y" . TopMenuY4 . " w" . TopMenuW4 . " h" . TopMenuH4 . " Background" . COLOR_ORANGE) ; Renders first segmented header accent block in orange
+    TopMenuX4 := Round(346 * ScaleMultiplier), TopMenuY4 := Round(107 * ScaleMultiplier)
+    TopMenuW4 := Round(65 * ScaleMultiplier),  TopMenuH4 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX4 . " y" . TopMenuY4 . " w" . TopMenuW4 . " h" . TopMenuH4 . " Background" . COLOR_ORANGE)
 
-    TopMenuX5 := Round(417 * ScaleMultiplier), TopMenuY5 := Round(107 * ScaleMultiplier) ; Scales position for second segmented header data track
-    TopMenuW5 := Round(385 * ScaleMultiplier), TopMenuH5 := Round(16 * ScaleMultiplier)  ; Scales dimensions for second segmented header data track
-    TopMenuGui.AddText("x" . TopMenuX5 . " y" . TopMenuY5 . " w" . TopMenuW5 . " h" . TopMenuH5 . " Background" . COLOR_PURPLE) ; Renders second segmented header data track in purple
+    TopMenuX5 := Round(417 * ScaleMultiplier), TopMenuY5 := Round(107 * ScaleMultiplier)
+    TopMenuW5 := Round(385 * ScaleMultiplier), TopMenuH5 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX5 . " y" . TopMenuY5 . " w" . TopMenuW5 . " h" . TopMenuH5 . " Background" . COLOR_PURPLE)
 
-    TopMenuX6 := Round(808 * ScaleMultiplier), TopMenuY6 := Round(107 * ScaleMultiplier) ; Scales position for third segmented header accent block
-    TopMenuW6 := Round(200 * ScaleMultiplier), TopMenuH6 := Round(16 * ScaleMultiplier)  ; Scales dimensions for third segmented header accent block
-    TopMenuGui.AddText("x" . TopMenuX6 . " y" . TopMenuY6 . " w" . TopMenuW6 . " h" . TopMenuH6 . " Background" . COLOR_LILAC) ; Renders third segmented header accent block in lilac
+    TopMenuX6 := Round(808 * ScaleMultiplier), TopMenuY6 := Round(107 * ScaleMultiplier)
+    TopMenuW6 := Round(200 * ScaleMultiplier), TopMenuH6 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX6 . " y" . TopMenuY6 . " w" . TopMenuW6 . " h" . TopMenuH6 . " Background" . COLOR_LILAC)
 
-    TopMenuX7 := Round(1014 * ScaleMultiplier), TopMenuY7 := Round(107 * ScaleMultiplier) ; Scales position for fourth segmented header accent block
-    TopMenuW7 := Round(65 * ScaleMultiplier),   TopMenuH7 := Round(16 * ScaleMultiplier)  ; Scales dimensions for fourth segmented header accent block
-    TopMenuGui.AddText("x" . TopMenuX7 . " y" . TopMenuY7 . " w" . TopMenuW7 . " h" . TopMenuH7 . " Background" . COLOR_ORANGE) ; Renders fourth segmented header accent block in orange
+    TopMenuX7 := Round(1014 * ScaleMultiplier), TopMenuY7 := Round(107 * ScaleMultiplier)
+    TopMenuW7 := Round(65 * ScaleMultiplier),   TopMenuH7 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX7 . " y" . TopMenuY7 . " w" . TopMenuW7 . " h" . TopMenuH7 . " Background" . COLOR_ORANGE)
 
-    TopMenuX8 := Round(1085 * ScaleMultiplier), TopMenuY8 := Round(107 * ScaleMultiplier) ; Scales position for fifth segmented header data track
-    TopMenuW8 := Round(700 * ScaleMultiplier),  TopMenuH8 := Round(16 * ScaleMultiplier)  ; Scales dimensions for fifth segmented header data track
-    TopMenuGui.AddText("x" . TopMenuX8 . " y" . TopMenuY8 . " w" . TopMenuW8 . " h" . TopMenuH8 . " Background" . COLOR_MAUVE) ; Renders fifth segmented header data track in mauve
+    TopMenuX8 := Round(1085 * ScaleMultiplier), TopMenuY8 := Round(107 * ScaleMultiplier)
+    TopMenuW8 := Round(700 * ScaleMultiplier),  TopMenuH8 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX8 . " y" . TopMenuY8 . " w" . TopMenuW8 . " h" . TopMenuH8 . " Background" . COLOR_MAUVE)
 
-    TopMenuX9 := Round(1791 * ScaleMultiplier), TopMenuY9 := Round(107 * ScaleMultiplier) ; Scales position for sixth segmented header terminal block
-    TopMenuW9 := Round(129 * ScaleMultiplier),  TopMenuH9 := Round(16 * ScaleMultiplier)  ; Scales dimensions for sixth segmented header terminal block
-    TopMenuGui.AddText("x" . TopMenuX9 . " y" . TopMenuY9 . " w" . TopMenuW9 . " h" . TopMenuH9 . " Background" . COLOR_LILAC) ; Renders sixth segmented header terminal block in lilac
+    TopMenuX9 := Round(1791 * ScaleMultiplier), TopMenuY9 := Round(107 * ScaleMultiplier)
+    TopMenuW9 := Round(129 * ScaleMultiplier),  TopMenuH9 := Round(16 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuX9 . " y" . TopMenuY9 . " w" . TopMenuW9 . " h" . TopMenuH9 . " Background" . COLOR_LILAC)
 
     ; --- Scaled Grid Cutout Mask ---
-    TopMenuXb := Round(140 * ScaleMultiplier) ; Scales starting horizontal origin for main shortcut grid cutout mask
-    TopMenuWb := (TopMenuW - Round(40 * ScaleMultiplier) + Round(6 * ScaleMultiplier)) - TopMenuXb ; Calculates scaled width for primary top grid cutout field
-    TopMenuHb := Round(107 * ScaleMultiplier) ; Fully scales cutout height to ensure complete coverage for 3 full button rows on High-DPI displays
-    TopMenuGui.AddText("x" . TopMenuXb . " y0 w" . TopMenuWb . " h" . TopMenuHb . " Background" . COLOR_BACKGROUND) ; Renders cutout mask in solid background color to house the dynamic launcher matrix
-
-    ; --- Sidebar Elements ---
-    SideBarX := 0, SideBarY := Round(123 * ScaleMultiplier) ; Scales origin coordinates for upper sidebar block
-    SideBarW := Round(126 * ScaleMultiplier), SideBarH := Round(100 * ScaleMultiplier) ; Scales width and height metrics for upper sidebar block
-    TopMenuGui.AddText("x" . SideBarX . " y" . SideBarY . " w" . SideBarW . " h" . SideBarH . " Background" . COLOR_LIGHT_BLUE) ; Renders upper sidebar block in light blue
-
-    SideBarX2 := 0, SideBarY2 := SideBarY + SideBarH ; Calculates starting coordinates for main vertical sidebar track
-    SideBarW2 := Round(126 * ScaleMultiplier)        ; Sets scaled explicit width for main vertical sidebar track
-    SideBarH2 := ScreenHeight - SideBarY2            ; Calculates remaining display height to extend vertical sidebar track down to screen bottom
-    TopMenuGui.AddText("x" . SideBarX2 . " y" . SideBarY2 . " w" . SideBarW2 . " h" . SideBarH2 . " Background" . COLOR_MAUVE) ; Renders main vertical sidebar track in mauve
+    TopMenuXb := Round(140 * ScaleMultiplier)
+    TopMenuWb := (TopMenuW - Round(40 * ScaleMultiplier) + Round(6 * ScaleMultiplier)) - TopMenuXb
+    TopMenuHb := Round(107 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . TopMenuXb . " y0 w" . TopMenuWb . " h" . TopMenuHb . " Background" . COLOR_BACKGROUND)
 
     ; --- Bottom Segmented Data Row ---
-    BotRowY := ScreenHeight - Round(32 * ScaleMultiplier) ; Calculates vertical origin to anchor the bottom telemetry bar exactly 32 scaled pixels above screen bottom
-    TopMenuGui.AddText("x" . Round(126 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(700 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_MAUVE)  ; Renders primary bottom-left mauve data track block starting adjacent to sidebar
-    TopMenuGui.AddText("x" . Round(832 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE) ; Renders first orange structural accent block in bottom telemetry row
-    TopMenuGui.AddText("x" . Round(903 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(200 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_LILAC)  ; Renders middle lilac navigation segment in bottom telemetry row
-    TopMenuGui.AddText("x" . Round(1109 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(385 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_PURPLE) ; Renders secondary purple data track block in bottom telemetry row
-    TopMenuGui.AddText("x" . Round(1500 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE) ; Renders second orange structural accent block in bottom telemetry row
+    BotRowY := ScreenHeight - Round(32 * ScaleMultiplier)
+    TopMenuGui.AddText("x" . Round(126 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(700 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_MAUVE)
+    TopMenuGui.AddText("x" . Round(832 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE)
+    TopMenuGui.AddText("x" . Round(903 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(200 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_LILAC)
+    TopMenuGui.AddText("x" . Round(1109 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(385 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_PURPLE)
+    TopMenuGui.AddText("x" . Round(1500 * ScaleMultiplier) . " y" . BotRowY . " w" . Round(65 * ScaleMultiplier) . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_ORANGE)
 
-    BotRowX9 := Round(1571 * ScaleMultiplier) ; Calculates scaled starting horizontal coordinate for terminal right bottom block
-    BotRowW9 := ScreenWidth - BotRowX9        ; Dynamically calculates remaining pixel width to span terminal block to right screen edge
-    TopMenuGui.AddText("x" . BotRowX9 . " y" . BotRowY . " w" . BotRowW9 . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_LILAC) ; Renders final rightmost lilac terminal block extending to screen edge
+    BotRowX9 := Round(1571 * ScaleMultiplier)
+    BotRowW9 := ScreenWidth - BotRowX9
+    TopMenuGui.AddText("x" . BotRowX9 . " y" . BotRowY . " w" . BotRowW9 . " h" . Round(32 * ScaleMultiplier) . " Background" . COLOR_STEEL_BLUE)
 
-; --- CALCULATE WORKSPACE DOCK BOUNDS ---
-    global ActiveWinX := StaticX                              ; Sets horizontal pixel origin for snapped application viewport alignment
-    global ActiveWinY := StaticY                              ; Sets vertical pixel origin for snapped application viewport alignment
-    global ActiveWinW := ScreenWidth - StaticX + 10           ; Calculates viewport pixel width spanning from sidebar track to right edge
+    ; --- CALCULATE WORKSPACE DOCK BOUNDS ---
+    global ActiveWinX := StaticX
+    global ActiveWinY := StaticY
+    global ActiveWinW := ScreenWidth - StaticX + 4
 
-    ; Dynamically check for the taskbar, or fallback to your 40px guess
-    try {                                                     ; Begins safe execution block to query system taskbar metrics
-        WinGetPos(,,, &TaskbarH, "ahk_class Shell_TrayWnd")   ; Queries native Windows shell taskbar handle to extract physical height
-    } catch {                                                 ; Handles exception if taskbar handle is inaccessible or hidden
-        TaskbarH := 40                                        ; Assigns baseline 40-pixel fallback estimate for vertical clearance
+    try {
+        WinGetPos(,,, &TaskbarH, "ahk_class Shell_TrayWnd")
+    } catch {
+        TaskbarH := 40
     }
     
-; Exact boundary assignment using the precise structural formula
-    global ActiveWinH := ScreenHeight - ((TaskbarH > 1) ? TaskbarH : 0) - StaticY + 10 ; Evaluates target viewport height while subtracting taskbar and upper menu clearance
+    global ActiveWinH := ScreenHeight - ((TaskbarH > 1) ? TaskbarH : 0) - StaticY + 10
 
     ; --- LAYER 2: INTERACTIVE FOREGROUND LAYER ---
-    InteractGui := Gui("-Caption +ToolWindow +E0x08000000 +Parent" . TopMenuGui.Hwnd)    ; Instantiates child GUI overlay bound to main canvas using WS_EX_NOACTIVATE style
-    InteractGui.BackColor := CHROMA_KEY                                                  ; Applies global transparency mask color to establish click-through foreground layer
+    InteractGui := Gui("-Caption +ToolWindow +E0x08000000 +Parent" . TopMenuGui.Hwnd)
+    InteractGui.BackColor := CHROMA_KEY
 
     ; --- RENDER EXECUTION ---
-    TopMenuGui.Show("x0 y0 w" . ScreenWidth . " h" . ScreenHeight . " NoActivate")        ; Displays background canvas GUI maximized across full display screen without capturing focus
-    WinSetTransColor(CHROMA_KEY, TopMenuGui.Hwnd)                                        ; Applies chroma key color mask to make transparent regions click-through to desktop
+    TopMenuGui.Show("x0 y0 w" . ScreenWidth . " h" . ScreenHeight . " NoActivate")
+    WinSetTransColor(CHROMA_KEY, TopMenuGui.Hwnd)
 
-    InteractGui.Show("x" . StaticX . " y" . StaticY . " w400 h100 NoActivate")            ; Displays interactive foreground layer at viewport origin coordinates without capturing focus
-    WinSetTransColor(CHROMA_KEY, InteractGui.Hwnd)                                       ; Applies chroma key color mask to interactive layer for seamless element transparency
+    InteractGui.Show("x" . StaticX . " y" . StaticY . " w400 h100 NoActivate")
+    WinSetTransColor(CHROMA_KEY, InteractGui.Hwnd)
 
-    ; Primary layer placement below panels
-    SendInterfaceToBottom()                                                              ; Forces main background canvas handle to bottom of window Z-order stack
+    SendInterfaceToBottom()
 
     ; --- INITIALIZE VIEWPORT MANAGERS & SYSTEM HOOKS ---
-    DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)                              ; Registers script handle with Windows shell to listen for OS-wide window events
-    OnMessage(DllCall("RegisterWindowMessage", "Str", "SHELLHOOK"), ShellEvent)          ; Binds shell hook message monitor to ShellEvent callback handler function
-    SetTimer(WatchdogCheck, 500)                                                         ; Schedules repeating 500ms timer loop to monitor auxiliary menu layout integrity
+    DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)
+    OnMessage(DllCall("RegisterWindowMessage", "Str", "SHELLHOOK"), ShellEvent)
+    SetTimer(WatchdogCheck, 500)
 
-    EnforceBoundaries()                                                                  ; Triggers immediate viewport snap evaluation for currently active foreground application
+    EnforceBoundaries()
 
-    ; Clean up rendering artifacts
-    DllCall("user32\RedrawWindow", "ptr", DesktopHwnd, "ptr", 0, "ptr", 0, "uint", 1)    ; Issues forced user32 redraw refresh to native desktop canvas to clear visual artifacts
+    DllCall("user32\RedrawWindow", "ptr", DesktopHwnd, "ptr", 0, "ptr", 0, "uint", 1)
 }
 
 ; ==============================================================================
@@ -272,7 +280,7 @@ InitializeLcars() {
 InitializeTaskbarDock() {
     global LCARS_DockGui, TopBlackBar, BottomBlackBar, DockControls                     ; References global handles and control array for sidebar taskbar dock management
     
-    VerticalOffset := 206                                                               ; Defines baseline vertical pixel offset to position dock below upper sidebar blocks
+    VerticalOffset := 250                                                              ; Defines baseline vertical pixel offset to position dock below upper sidebar blocks
     
     LCARS_DockGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000")              ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     
@@ -536,44 +544,99 @@ UpdateClock(*) {
 }
 
 ; ==============================================================================
-; INTEGRATED LCARS VOLUME CONTROL WIDGET MODULE
+; INTEGRATED LCARS VOLUME CONTROL WIDGET MODULE (SLIDER & STATUS DOT ONLY)
 ; ==============================================================================
 InitializeVolumeWidget() {
-    global volGui
+    global volGui, MuteDotCtrl
     
-    ; Instantiates non-activating, frameless tool window overlay maintaining topmost layer status
     volGui := Gui("+AlwaysOnTop -Caption +ToolWindow +E0x08000000", "LCARS VOLUME")
-    volGui.BackColor := COLOR_BACKGROUND                               ; Applies solid black canvas background
+    volGui.BackColor := COLOR_BACKGROUND
 
-    volGui.MarginX := 6                                                ; Defines horizontal pixel padding for interior controls
-    volGui.MarginY := 6                                                ; Defines vertical pixel padding for interior controls
+    ; 127px Total Width Canvas Bounds
+    BoxW := 127
+    volGui.MarginX := 0
+    volGui.MarginY := 8
 
-    currentVol := Round(SoundGetVolume())                              ; Queries OS audio endpoint to capture active volume percentage
-    isMuted    := SoundGetMute() ? true : false                         ; Queries OS audio endpoint to capture system mute status
+    currentVol := Round(SoundGetVolume())
+    isMuted    := SoundGetMute() ? true : false
 
-    ; --- VOLUME STATUS READOUT & SLIDER ---
+    ; --- 1. VOLUME STATUS TEXT (CENTERED) ---
     volGui.SetFont("s10 bold c" . (isMuted ? COLOR_RED : COLOR_AMBER), "Arial")
-    volGui.AddText("vVolText w104 Center", isMuted ? "VOL: MUTED" : "VOL: " . currentVol . "%")
+    volGui.AddText("vVolText x0 w" . BoxW . " Center", isMuted ? "VOL: MUTED" : "VOL: " . currentVol . "%")
 
-    volSlider := volGui.AddSlider("vVolSlider w104 Range0-100 ToolTip", currentVol)
+    ; --- 2. SLIDER ROW WITH MUTE STATUS DOT ---
+    DotSize := 12
+    SliderW := 95
+    RowGap  := 4
+    
+    ; Calculate horizontal offsets to center (Dot + Gap + Slider) within 127px
+    TotalRowW := DotSize + RowGap + SliderW
+    StartX    := Round((BoxW - TotalRowW) / 2)
+
+    ; Mute Status Indicator Dot (Picture Control)
+    MuteDotCtrl := volGui.Add("Pic", "vMuteDot x" . StartX . " y+8 w" . DotSize . " h" . DotSize . " +0x0100", "")
+    MuteDotCtrl.OnEvent("Click", ToggleMute) ; Clicking dot toggles mute
+
+    ; Volume Slider (-Tabstop prevents focus indicator)
+    volSlider := volGui.AddSlider("vVolSlider x" . (StartX + DotSize + RowGap) . " yp-8 w" . SliderW . " Range0-100 ToolTip -Tabstop", currentVol)
     volSlider.OnEvent("Change", OnSliderChange)
 
-    ; --- TACTICAL MUTE TOGGLE BUTTON ---
-    volGui.SetFont("s10 bold cBlack", "Arial")
-
-    btnMuteText  := isMuted ? "UNMUTE" : "MUTE"
-    btnMuteColor := isMuted ? COLOR_RED : COLOR_LAV
-
-    volGui.AddText("vBtnMute w104 h20 Center +0x200 Background" . btnMuteColor, btnMuteText).OnEvent("Click", ToggleMute)
-
-    ; --- VOLUME STEP INCREMENT/DECREMENT BUTTONS ---
-    volGui.SetFont("s15 bold cBlack", "Arial")
-
-    volGui.AddText("w48 h18 x6 y+6 Center +0x200 Background" . COLOR_AMBER, "-").OnEvent("Click", (*) => AdjustVol(-5))
-    volGui.AddText("w48 h18 x+8 yp Center +0x200 Background" . COLOR_AMBER, "+").OnEvent("Click", (*) => AdjustVol(+5))
-
     ; --- POSITIONING & RENDER ---
-    volGui.Show("x0 y78 w116 NoActivate")                              ; Displays volume widget along left screen edge without capturing window focus
+    volGui.Show("x0 y190 w" . BoxW . " NoActivate")
+    UpdateMuteUI(isMuted)
+}
+
+; ==============================================================================
+; MUTE STATUS DOT BITMAP GENERATOR
+; ==============================================================================
+CreateDotBitmap(HexColor, size := 12) {
+    bgCol := "0xFF" . HexColor
+
+    hdcScreen := DllCall("GetDC", "Ptr", 0, "Ptr")
+    hdcMem    := DllCall("CreateCompatibleDC", "Ptr", hdcScreen, "Ptr")
+    
+    bi := Buffer(40, 0)
+    NumPut("UInt", 40, "Int", size, "Int", -size, "UShort", 1, "UShort", 32, bi, 0)
+    hBitmap := DllCall("CreateDIBSection", "Ptr", hdcScreen, "Ptr", bi, "UInt", 0, "Ptr*", &pBits := 0, "Ptr", 0, "UInt", 0, "Ptr")
+    hOldBmp := DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hBitmap, "Ptr")
+
+    DllCall("gdiplus\GdipCreateFromHDC", "Ptr", hdcMem, "Ptr*", &pGraphics := 0)
+    DllCall("gdiplus\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)
+
+    DllCall("gdiplus\GdipCreateSolidFill", "UInt", bgCol, "Ptr*", &pBrush := 0)
+    DllCall("gdiplus\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrush, "Float", 0, "Float", 0, "Float", size, "Float", size)
+
+    DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrush)
+    DllCall("gdiplus\GdipDeleteGraphics", "Ptr", pGraphics)
+    DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hOldBmp)
+    DllCall("DeleteDC", "Ptr", hdcMem)
+    DllCall("ReleaseDC", "Ptr", 0, "Ptr", hdcScreen)
+
+    return hBitmap
+}
+
+; ==============================================================================
+; MUTE STATUS DOT & UI REDRAW ENGINE
+; ==============================================================================
+UpdateMuteUI(muted) {
+    global MuteDotCtrl
+    volTxt := volGui["VolText"]
+    
+    if (muted) {
+        volTxt.SetFont("c" . COLOR_RED)
+        volTxt.Value := "VOL: MUTED"
+        hDotBmp := CreateDotBitmap(COLOR_RED, 12)
+    } else {
+        volTxt.SetFont("c" . COLOR_AMBER)
+        volTxt.Value := "VOL: " . Round(SoundGetVolume()) . "%"
+        hDotBmp := CreateDotBitmap("00FF00", 12) ; Bright Green
+    }
+
+    if (MuteDotCtrl) {
+        MuteDotCtrl.Value := "HBITMAP:" . hDotBmp
+    }
+
+    WinRedraw(volGui.Hwnd)
 }
 
 ; ==============================================================================
@@ -591,52 +654,10 @@ OnSliderChange(ctrl, *) {
     }
 }
 
-AdjustVol(delta) {
-    current := SoundGetVolume()                                        ; Queries active OS audio volume level
-    target := Clamp(Round(current + delta), 0, 100)                     ; Calculates step adjustment and clamps result within 0-100 bounds
-    SoundSetVolume(target)                                             ; Writes clamped volume level to OS audio endpoint
-    volGui["VolSlider"].Value := target                                ; Syncs slider control position to updated volume value
-    
-    if (SoundGetMute()) {                                              ; If system is currently muted, pressing +/- auto-unmutes audio
-        SoundSetMute(0)                                                ; Clears native OS mute state
-        UpdateMuteUI(false)                                            ; Re-renders volume widget interface to active state
-    } else {
-        volGui["VolText"].Value := "VOL: " . target . "%"              ; Updates text readout control with adjusted percentage
-    }
-}
-
 ToggleMute(*) {
     SoundSetMute(-1)                                                   ; Flips native Windows OS mute state
     realState := SoundGetMute() ? true : false                         ; Queries OS endpoint to verify real-time mute status
     UpdateMuteUI(realState)                                            ; Updates widget color scheme and text labels based on verified state
-}
-
-UpdateMuteUI(muted) {
-    volTxt := volGui["VolText"]                                        ; References volume text readout control handle
-    btnMuteCtrl := volGui["BtnMute"]                                   ; References mute button control handle
-    
-    if (muted) {
-        btnMuteCtrl.Opt("+Background" . COLOR_RED)                      ; Shifts mute button background to critical alert red
-        btnMuteCtrl.Value := "UNMUTE"                                  ; Updates button label to prompt unmute action
-        
-        volTxt.SetFont("c" . COLOR_RED)                                ; Shifts status text font color to alert red
-        volTxt.Value := "VOL: MUTED"                                   ; Writes muted state string to status readout
-    } else {
-        btnMuteCtrl.Opt("+Background" . COLOR_LAV)                      ; Restores mute button background to standard lavender
-        btnMuteCtrl.Value := "MUTE"                                    ; Updates button label to prompt mute action
-        
-        volTxt.SetFont("c" . COLOR_AMBER)                              ; Restores status text font color to Operations Yellow
-        volTxt.Value := "VOL: " . Round(SoundGetVolume()) . "%"        ; Writes numeric volume percentage to status readout
-    }
-    
-    WinRedraw(volGui.Hwnd)                                             ; Issues forced redraw refresh to clear rendering artifacts
-}
-
-; ==============================================================================
-; UTILITY: VALUE CLAMPING ALGORITHM
-; ==============================================================================
-Clamp(val, low, high) {
-    return Max(low, Min(val, high))                                    ; Restricts numeric input value to fall strictly within specified bounds
 }
 
 ; ==============================================================================
@@ -705,7 +726,7 @@ InitializeShortcutMenu() {
 }
 
 ; ==============================================================================
-; AUXILIARY THREE-DOT MENU ENGINE
+; AUXILIARY FOUR-DOT VECTOR MENU ENGINE
 ; ==============================================================================
 InitializeAuxMenu() {
     global AuxMenuGui
@@ -716,9 +737,9 @@ InitializeAuxMenu() {
     AuxMenuGui.BackColor := MaskColor                                   ; Applies solid background color mask
 
     ; Calculates scaled diameter dimensions and pad spacing for vector indicator dots
-    DotSize := Round(24 * ScaleMultiplier)
-    AuxPad  := Round(12 * ScaleMultiplier)
-    TotalW  := (DotSize * 3) + (AuxPad * 2)                             ; Computes total bounding width for three-dot array
+    DotSize := Round(20 * ScaleMultiplier)
+    AuxPad  := Round(6 * ScaleMultiplier)
+    TotalW  := (DotSize * 4) + (AuxPad * 3)                             ; Computes total bounding width for 4-dot array
 
     ; --- 1. RED DOT (KILL SWITCH / EXIT APP) ---
     AuxMenuGui.AddText("x0 y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_KILL"
@@ -729,8 +750,11 @@ InitializeAuxMenu() {
     ; --- 3. GOLD DOT (DESKTOP ICON MATRIX REALIGNMENT) ---
     AuxMenuGui.AddText("x" . ((DotSize * 2) + (AuxPad * 2)) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_ICONS"
 
+    ; --- 4. GREEN DOT (GITHUB REPOSITORY LINK) ---
+    AuxMenuGui.AddText("x" . ((DotSize * 3) + (AuxPad * 3)) . " y0 w" . DotSize . " h" . DotSize . " +BackgroundTrans +0x0100").Key := "SYS_GITHUB"
+
     ; Displays overlay window at blueprint coordinates without capturing OS window focus
-    AuxMenuGui.Show("x15 y40 w" . (TotalW + 20) . " h" . (DotSize + 20) . " NoActivate")
+    AuxMenuGui.Show("x15 y120 w" . (TotalW + 20) . " h" . (DotSize + 20) . " NoActivate")
     WinSetTransColor(MaskColor, AuxMenuGui)                             ; Applies transparency mask key to make empty panel areas click-through
 
     ; ==============================================================================
@@ -760,10 +784,16 @@ InitializeAuxMenu() {
     DllCall("gdiplus.dll\GdipCreateSolidFill", "UInt", ColorGoldARGB, "Ptr*", &pBrushGold:=0)
     DllCall("gdiplus.dll\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrushGold, "Float", (DotSize * 2) + (AuxPad * 2), "Float", 0, "Float", DotSize, "Float", DotSize)
 
+    ; --- PAINT GREEN VECTOR DOT ---
+    ColorGreenARGB := 0xFF99AA66  ; LCARS Muted Green
+    DllCall("gdiplus.dll\GdipCreateSolidFill", "UInt", ColorGreenARGB, "Ptr*", &pBrushGreen:=0)
+    DllCall("gdiplus.dll\GdipFillEllipse", "Ptr", pGraphics, "Ptr", pBrushGreen, "Float", (DotSize * 3) + (AuxPad * 3), "Float", 0, "Float", DotSize, "Float", DotSize)
+
     ; --- GDI+ CLEANUP ---
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushRed)
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushBlue)
     DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushGold)
+    DllCall("gdiplus.dll\GdipDeleteBrush", "Ptr", pBrushGreen)
     DllCall("gdiplus.dll\GdipDeleteGraphics", "Ptr", pGraphics)
     DllCall("user32.dll\ReleaseDC", "Ptr", AuxMenuGui.Hwnd, "Ptr", hdc)
 }
@@ -872,15 +902,19 @@ WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
 
         ; --- 2. HANDLE VECTOR COMMAND BUTTONS (SYS_* Namespace) ---
         if (clickedCtrl.Key == "SYS_KILL") {
-            ExitApp()                                                  ; Triggers global script termination
+            ExitApp()
             return 0  
         }
         if (clickedCtrl.Key == "SYS_SNAP") {
-            ForceViewportRecalibration()                               ; Recalibrates target window boundaries to active viewport
+            ForceViewportRecalibration()
             return 0  
         }
         if (clickedCtrl.Key == "SYS_ICONS") {
-            AlignDesktopIcons()                                        ; Re-aligns desktop matrix icons adjacent to sidebar
+            AlignDesktopIcons()
+            return 0
+        }
+        if (clickedCtrl.Key == "SYS_GITHUB") {
+            Run("https://github.com/ericfmyers/LCARS.ahk")
             return 0
         }
         
@@ -1418,13 +1452,208 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 
     return hBitmap                                                     ; Returns completed GDI+ 32-bit pill bitmap handle
 }
+
+; ==============================================================================
+; DYNAMIC GDI+ LCARS VERTICAL RAIL GENERATOR (CURVED TOP-LEFT & BOTTOM-LEFT)
+; ==============================================================================
+CreateRailBitmap(w, h, topLeftR, bottomLeftR, HexColor) {
+    bgCol := "0xFF" . HexColor
+
+    hGdiplus := DllCall("kernel32.dll\LoadLibrary", "Str", "gdiplus.dll", "Ptr")
+    si := Buffer(24, 0)
+    NumPut("UInt", 1, si, 0)
+    DllCall("gdiplus\GdiplusStartup", "Ptr*", &pToken := 0, "Ptr", si.Ptr, "Ptr", 0)
+
+    hdcScreen := DllCall("GetDC", "Ptr", 0, "Ptr")
+    hdcMem    := DllCall("CreateCompatibleDC", "Ptr", hdcScreen, "Ptr")
+    
+    bi := Buffer(40, 0)
+    NumPut("UInt", 40, "Int", w, "Int", -h, "UShort", 1, "UShort", 32, bi, 0)
+    hBitmap := DllCall("CreateDIBSection", "Ptr", hdcScreen, "Ptr", bi, "UInt", 0, "Ptr*", &pBits := 0, "Ptr", 0, "UInt", 0, "Ptr")
+    hOldBmp := DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hBitmap, "Ptr")
+
+    DllCall("gdiplus\GdipCreateFromHDC", "Ptr", hdcMem, "Ptr*", &pGraphics := 0)
+    DllCall("gdiplus\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)
+
+    DllCall("gdiplus\GdipCreatePath", "Int", 0, "Ptr*", &pPath := 0)
+    
+    ; 1. Top-Left Arc
+    if (topLeftR > 0) {
+        DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", 0, "Float", topLeftR * 2, "Float", topLeftR * 2, "Float", 180, "Float", 90)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", topLeftR, "Float", 0, "Float", w, "Float", 0)
+    } else {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", 0, "Float", w, "Float", 0)
+    }
+    
+    ; 2. Right Edge down to Bottom
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", 0, "Float", w, "Float", h)
+    
+    ; 3. Bottom-Left Arc
+    if (bottomLeftR > 0) {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", h, "Float", bottomLeftR, "Float", h)
+        DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", h - (bottomLeftR * 2), "Float", bottomLeftR * 2, "Float", bottomLeftR * 2, "Float", 90, "Float", 90)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", h - bottomLeftR, "Float", 0, "Float", topLeftR)
+    } else {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", h, "Float", 0, "Float", h)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", h, "Float", 0, "Float", 0)
+    }
+    
+    DllCall("gdiplus\GdipClosePathFigure", "Ptr", pPath)
+
+    DllCall("gdiplus\GdipCreateSolidFill", "UInt", bgCol, "Ptr*", &pBrushBg := 0)
+    DllCall("gdiplus\GdipFillPath", "Ptr", pGraphics, "Ptr", pBrushBg, "Ptr", pPath)
+
+    DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrushBg)
+    DllCall("gdiplus\GdipDeletePath", "Ptr", pPath)
+    DllCall("gdiplus\GdipDeleteGraphics", "Ptr", pGraphics)
+    DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hOldBmp)
+    DllCall("DeleteDC", "Ptr", hdcMem)
+    DllCall("ReleaseDC", "Ptr", 0, "Ptr", hdcScreen)
+    DllCall("gdiplus\GdiplusShutdown", "Ptr", pToken)
+
+    return hBitmap
+}
+
+
+
+
+CreateElbowBitmap(w, h, topThick, sideThick, outerR, innerR, topRightR, bottomLeftR, HexColor, textStr := "", textColHex := "000000") {
+    bgCol   := "0xFF" . HexColor
+    textCol := "0xFF" . textColHex
+
+    hGdiplus := DllCall("kernel32.dll\LoadLibrary", "Str", "gdiplus.dll", "Ptr")
+    si := Buffer(24, 0)
+    NumPut("UInt", 1, si, 0)
+    DllCall("gdiplus\GdiplusStartup", "Ptr*", &pToken := 0, "Ptr", si.Ptr, "Ptr", 0)
+
+    hdcScreen := DllCall("GetDC", "Ptr", 0, "Ptr")
+    hdcMem    := DllCall("CreateCompatibleDC", "Ptr", hdcScreen, "Ptr")
+    
+    bi := Buffer(40, 0)
+    NumPut("UInt", 40, "Int", w, "Int", -h, "UShort", 1, "UShort", 32, bi, 0)
+    hBitmap := DllCall("CreateDIBSection", "Ptr", hdcScreen, "Ptr", bi, "UInt", 0, "Ptr*", &pBits := 0, "Ptr", 0, "UInt", 0, "Ptr")
+    hOldBmp := DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hBitmap, "Ptr")
+
+    DllCall("gdiplus\GdipCreateFromHDC", "Ptr", hdcMem, "Ptr*", &pGraphics := 0)
+    DllCall("gdiplus\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)
+    DllCall("gdiplus\GdipSetTextRenderingHint", "Ptr", pGraphics, "Int", 4)
+
+    DllCall("gdiplus\GdipCreatePath", "Int", 0, "Ptr*", &pPath := 0)
+    
+    ; 1. Outer Top-Left Arc
+    DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", 0, "Float", outerR * 2, "Float", outerR * 2, "Float", 180, "Float", 90)
+    
+    ; 2. Top Edge to Top-Right
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", outerR, "Float", 0, "Float", w - topRightR, "Float", 0)
+    
+    ; 3. Top-Right Outer Rounded Arc
+    if (topRightR > 0) {
+        DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", w - (topRightR * 2), "Float", 0, "Float", topRightR * 2, "Float", topRightR * 2, "Float", 270, "Float", 90)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", topRightR, "Float", w, "Float", topThick)
+    } else {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", 0, "Float", w, "Float", topThick)
+    }
+    
+    ; 4. Inner Top Edge
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", topThick, "Float", sideThick + innerR, "Float", topThick)
+    
+    ; 5. Inner Corner Concave Arc Sweep
+    DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", sideThick, "Float", topThick, "Float", innerR * 2, "Float", innerR * 2, "Float", 270, "Float", -90)
+    
+    ; 6. Vertical Sidebar Inner Edge down to Bottom
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", sideThick, "Float", topThick + innerR, "Float", sideThick, "Float", h)
+    
+    ; 7. Bottom Edge with Bottom-Left Curve
+    if (bottomLeftR > 0) {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", sideThick, "Float", h, "Float", bottomLeftR, "Float", h)
+        DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", h - (bottomLeftR * 2), "Float", bottomLeftR * 2, "Float", bottomLeftR * 2, "Float", 90, "Float", 90)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", h - bottomLeftR, "Float", 0, "Float", outerR)
+    } else {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", sideThick, "Float", h, "Float", 0, "Float", h)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", h, "Float", 0, "Float", outerR)
+    }
+    
+    DllCall("gdiplus\GdipClosePathFigure", "Ptr", pPath)
+
+    DllCall("gdiplus\GdipCreateSolidFill", "UInt", bgCol, "Ptr*", &pBrushBg := 0)
+    DllCall("gdiplus\GdipFillPath", "Ptr", pGraphics, "Ptr", pBrushBg, "Ptr", pPath)
+
+    DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrushBg)
+    DllCall("gdiplus\GdipDeletePath", "Ptr", pPath)
+    DllCall("gdiplus\GdipDeleteGraphics", "Ptr", pGraphics)
+    DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hOldBmp)
+    DllCall("DeleteDC", "Ptr", hdcMem)
+    DllCall("ReleaseDC", "Ptr", 0, "Ptr", hdcScreen)
+    DllCall("gdiplus\GdiplusShutdown", "Ptr", pToken)
+
+    return hBitmap
+}
+
+; ==============================================================================
+; DYNAMIC GDI+ LCARS TOP RAIL BLOCK GENERATOR (ROUNDED TOP-LEFT)
+; ==============================================================================
+CreateTopBlockBitmap(w, h, topLeftR, HexColor) {
+    bgCol := "0xFF" . HexColor
+
+    hGdiplus := DllCall("kernel32.dll\LoadLibrary", "Str", "gdiplus.dll", "Ptr")
+    si := Buffer(24, 0)
+    NumPut("UInt", 1, si, 0)
+    DllCall("gdiplus\GdiplusStartup", "Ptr*", &pToken := 0, "Ptr", si.Ptr, "Ptr", 0)
+
+    hdcScreen := DllCall("GetDC", "Ptr", 0, "Ptr")
+    hdcMem    := DllCall("CreateCompatibleDC", "Ptr", hdcScreen, "Ptr")
+    
+    bi := Buffer(40, 0)
+    NumPut("UInt", 40, "Int", w, "Int", -h, "UShort", 1, "UShort", 32, bi, 0)
+    hBitmap := DllCall("CreateDIBSection", "Ptr", hdcScreen, "Ptr", bi, "UInt", 0, "Ptr*", &pBits := 0, "Ptr", 0, "UInt", 0, "Ptr")
+    hOldBmp := DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hBitmap, "Ptr")
+
+    DllCall("gdiplus\GdipCreateFromHDC", "Ptr", hdcMem, "Ptr*", &pGraphics := 0)
+    DllCall("gdiplus\GdipSetSmoothingMode", "Ptr", pGraphics, "Int", 4)
+
+    DllCall("gdiplus\GdipCreatePath", "Int", 0, "Ptr*", &pPath := 0)
+    
+    ; 1. Top-Left Arc
+    if (topLeftR > 0) {
+        DllCall("gdiplus\GdipAddPathArc", "Ptr", pPath, "Float", 0, "Float", 0, "Float", topLeftR * 2, "Float", topLeftR * 2, "Float", 180, "Float", 90)
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", topLeftR, "Float", 0, "Float", w, "Float", 0)
+    } else {
+        DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", 0, "Float", w, "Float", 0)
+    }
+    
+    ; 2. Right Edge down
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", 0, "Float", w, "Float", h)
+    
+    ; 3. Bottom Edge left
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", w, "Float", h, "Float", 0, "Float", h)
+    
+    ; 4. Left Edge back up
+    DllCall("gdiplus\GdipAddPathLine", "Ptr", pPath, "Float", 0, "Float", h, "Float", 0, "Float", topLeftR)
+    
+    DllCall("gdiplus\GdipClosePathFigure", "Ptr", pPath)
+
+    DllCall("gdiplus\GdipCreateSolidFill", "UInt", bgCol, "Ptr*", &pBrushBg := 0)
+    DllCall("gdiplus\GdipFillPath", "Ptr", pGraphics, "Ptr", pBrushBg, "Ptr", pPath)
+
+    DllCall("gdiplus\GdipDeleteBrush", "Ptr", pBrushBg)
+    DllCall("gdiplus\GdipDeletePath", "Ptr", pPath)
+    DllCall("gdiplus\GdipDeleteGraphics", "Ptr", pGraphics)
+    DllCall("SelectObject", "Ptr", hdcMem, "Ptr", hOldBmp)
+    DllCall("DeleteDC", "Ptr", hdcMem)
+    DllCall("ReleaseDC", "Ptr", 0, "Ptr", hdcScreen)
+    DllCall("gdiplus\GdiplusShutdown", "Ptr", pToken)
+
+    return hBitmap
+}
+
+
 ; Keep, used for testing.
 ; Esc::ExitApp
 
 
 
 ; ==========================================================================================
-; LCARS V2.1 SYSTEM ARCHITECTURE MANUAL & MODIFICATION GUIDELINES
+; LCARS V2.2 SYSTEM ARCHITECTURE MANUAL & MODIFICATION GUIDELINES
 ; ==========================================================================================
 ;
 ; 1. WINDOW ARCHITECTURE & THE TWO-TIER GUI ENGINE
@@ -1448,14 +1677,14 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 ;      - The Shortcut Menu and Telemetry Engine utilize the EnforceLayers() timer loop to deliberately 
 ;        maintain an HWND_TOPMOST status so app launch tiles and readouts remain constantly accessible.
 ;
-; 3. INTEGRATED TRIPLE-ENGINE INTERACTION POOL (GRID, VECTOR & TELEMETRY)
-;    * Input Message Sharing: The GDI+ vector buttons (Three-Dot Menu), the drag-and-drop shortcut grid, 
+; 3. INTEGRATED QUAD-ENGINE INTERACTION POOL (GRID, VECTOR, TELEMETRY & GITHUB)
+;    * Input Message Sharing: The GDI+ vector buttons (Four-Dot Menu), the drag-and-drop shortcut grid, 
 ;      and the system monitor selectors all intercept clicks through a single shared pool 
 ;      (WM_LBUTTONDOWN / WM_LBUTTONUP).
 ;    * Control Namespace Guardrails: Any new structural or telemetry buttons added to the terminal MUST 
-;      be assigned a unique, explicit '.Key' property namespace (e.g., 'SYS_KILL' or 'STAT_CPU'). 
-;      If left blank, the shortcut engine's drag-and-drop matrix will falsely capture the click, 
-;      corrupting data layouts or causing execution crashes.
+;      be assigned a unique, explicit '.Key' property namespace (e.g., 'SYS_KILL', 'SYS_SNAP', 
+;      'SYS_ICONS', 'SYS_GITHUB', or 'STAT_CPU'). If left blank, the shortcut engine's drag-and-drop 
+;      matrix will falsely capture the click, corrupting data layouts or causing execution crashes.
 ;    * Telemetry Routing: Interactive stats items prefix their identification namespaces with 'STAT_'. 
 ;      The mouse handler captures this substring to bypass drag-and-drop validation loops and hot-swap 
 ;      WMI performance counters in real-time.
@@ -1473,13 +1702,13 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 ;      appended to the 'ActiveWinW' (Width) and 'ActiveWinH' (Height) expressions inside the 
 ;      InitializeLcars() function.
 ;
-; 5. TELEMETRY COOLDOWN & ALIGNMENT RESEVALUTION
+; 5. TELEMETRY COOLDOWN & ALIGNMENT REEVALUATION
 ;    * Coordinate Mapping: The Telemetry Engine calculates its layout using the 'StatsReservation' 
 ;      expression derived from the main engine canvas framework. This guarantees that 
 ;      the monitoring panels scale automatically across disparate screen resolutions without bleeding 
 ;      off-screen or overlapping the shortcut grid.
 ;    * Performance Throttle: To minimize baseline processor overhead, WMI queries for CPU load percentages 
-;      and network adapter bandwidth metrics are hard-capped to a asynchronous 3000ms polling cycle.
+;      and network adapter bandwidth metrics are hard-capped to an asynchronous 3000ms polling cycle.
 
 ; 6. CLOCK MODULE INTEGRATION & DISPLAY LAYER
 ;    * Top Layer Enforcement: ClockGui is tracked by EnforceLayers() every 500ms 
@@ -1487,20 +1716,18 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 ;    * Window Focus Exclusion: TrackActiveApp() explicitly ignores ClockGui.Hwnd 
 ;      so clicking the date or time to toggle formats does NOT overwrite the cached 
 ;      active application handle (LastActiveAppHWND) used by the Blue Dot viewport snapper.
-;    * Scaled Positioning & Format Toggles: Default coordinates use (1620 * ScaleMultiplier) 
+;    * Scaled Positioning & Format Toggles: Default coordinates use (1610 * ScaleMultiplier) 
 ;      for screen scaling. The clock elements use OnEvent("Click") handlers (ToggleDate/ToggleTime) 
 ;      to flip date/time format flags instantly without restarting the 1-second timer loop.
 
-; 7. VOLUME CONTROL MODULE INTEGRATION
-;    * Top Layer Enforcement: volGui is included in EnforceLayers() (500ms cycle) 
-;      to keep the overlay above the main canvas alongside ClockGui, ShortcutMenuGui, and StatsGui.
-;    * Window Focus Exclusion: TrackActiveApp() explicitly ignores volGui.Hwnd 
-;      so adjusting volume or toggling mute does NOT overwrite LastActiveAppHWND 
-;      (preserving the Blue Dot viewport snapper target).
-;    * Window Style Guardrails: Retains '+E0x08000000' (WS_EX_NOACTIVATE) to prevent 
-;      capturing OS focus during slider drags or button clicks, maintaining auto-hide taskbar compatibility.
-;    * Native Hardware Hooks: Direct AHK v2 SoundGetVolume, SoundSetVolume, and SoundSetMute 
-;      calls bypass external dependencies, updating the UI dynamically via UpdateMuteUI and WinRedraw.
+; 7. VOLUME CONTROL MODULE & MUTE VECTOR INDICATOR
+;    * Streamlined Architecture: The volume widget operates on a fixed 127px centered width. 
+;      Step increment buttons (+/-) have been pruned for a cleaner sidebar profile.
+;    * Vector Mute Dot: Mute state is managed via a 12px GDI+ picture control (MuteDotCtrl). 
+;      UpdateMuteUI() assigns dynamic bitmap handles generated by CreateDotBitmap(), rendering 
+;      Bright Green ("00FF00") when unmuted and Bright Red (COLOR_RED) when muted.
+;    * Top Layer & Focus Guardrails: Included in EnforceLayers() (500ms cycle) and retains 
+;      '+E0x08000000' (WS_EX_NOACTIVATE) to prevent stealing OS focus or breaking auto-hide taskbars.
 
 ; 8. TASKBAR DOCK / SIDEBAR ENGINE INTEGRATION
 ;    * Separate Transparency Key (COLOR_DOCK_BG): To render solid 1px black dividers and 6px framing
@@ -1515,19 +1742,13 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 ;    * Focus Tracking Exclusion: TrackActiveApp() explicitly ignores LCARS_DockGui.Hwnd so selecting 
 ;      or closing docked applications does not corrupt LastActiveAppHWND for the viewport snapper.
 
-; 9. VOLUME MODULE SYMBOL STYLING
-;    * Isolated Font Scaling: To change the font size of the +/- controls without affecting button 
-;      geometry, call volGui.SetFont("s14 bold") immediately before instantiating btnDown and btnUp. 
-;    * Alignment Preserves: Retain the +0x200 (vertical centering) and Center options in the AddText string 
-;      so enlarged font glyphs self-center within the existing 48x18 bounding boxes.
-
-; 10. SHORTCUT BUTTON COLOR CYCLING & DELETION
+; 9. SHORTCUT BUTTON COLOR CYCLING & DELETION
 ;    * Modifiers: To avoid accidental layout modifications:
 ;      - Ctrl + Right-Click: Triggers DeleteShortcutData() with a confirmation prompt.
 ;      - Alt + Right-Click: Cycles through the three-tier color palette via CycleBoxColor().
 ;      - Standard Right-Click: Ignored.
 
-; 11. DYNAMIC GDI+ PILL TEXT SCALING
+; 10. DYNAMIC GDI+ PILL TEXT SCALING
 ;    * Vector Rasterization: Shortcut pill labels are rendered dynamically as 32-bit GDI+ bitmaps 
 ;      inside CreatePillBitmap(), bypassing standard AHK GUI control font declarations (e.g., MenuFontSize).
 ;    * Threshold Scaling: Font sizes are controlled inside CreatePillBitmap() by evaluating label length:
@@ -1536,22 +1757,31 @@ CreatePillBitmap(HexColor, TextStr := "", TextColorHex := "000000") {
 ;    * Custom Adjustments: Adjust these point values directly inside CreatePillBitmap() when tweaking 
 ;      pill typography or string overflow constraints.
 
-; 12. LOCAL CONTROL HANDLE PRUNING & INLINE BINDING
+; 11. LOCAL CONTROL HANDLE PRUNING & INLINE BINDING
 ;    * Control Assignment Pattern: Controls in AuxMenuGui, StatsGui, and volGui do NOT 
-;      store local variable handles (e.g. CpuBtn, KillSwitchBtn) during instantiation.
+;      store local variable handles during instantiation.
 ;    * Namespace Chaining: Instead, properties and event bindings are chained directly 
 ;      onto the instantiation call (e.g., Gui.AddText(...).Key := "SYS_KILL"). 
 ;    * Dynamic Lookups: Sub-routines reference controls dynamically via GUI indexing 
 ;      (e.g., volGui["VolText"]) or WM message interceptors checking clickedCtrl.Key.
 
-; 13. COLOR PALETTE EXPANSION RESERVATION
+; 12. COLOR PALETTE EXPANSION RESERVATION
 ;    * Structural Color Definitions: The global color palette contains extended LCARS hex 
 ;      definitions (e.g., COLOR_SCIENCE_TEAL, COLOR_BURGUNDY, COLOR_EGGPLANT) that are 
 ;      intentionally retained for future sub-panel and widget design expansions.
 
-; 14. INI SHORTCUT KEY MAP PRESERVATION
+; 13. INI SHORTCUT KEY MAP PRESERVATION
 ;    * Grid Control Properties: Shortcut grid controls rely strictly on boxCtrl.Key 
 ;      (e.g., "Slot_1_1") for INI serialization. Do NOT attach redundant .Row or .Col 
 ;      properties inside InitializeShortcutMenu(), as all matrix placement and drag-and-drop 
 ;      actions use the explicit Key namespace.
+
+; 14. STRUCTURAL VECTOR FRAME & CURVE GEOMETRY ENGINE
+;    * Interlocking Rail System: The sidebar frame utilizes dynamic GDI+ path rendering:
+;      - Upper Lilac Elbow (CreateElbowBitmap): Extends to Y=150 with a rounded bottom-left cap.
+;      - Lower Mauve Rail (CreateRailBitmap): Starts at Y=156 (leaving a 6px black LCARS gap) 
+;        and spans to absolute ScreenHeight with a curved top-left and bottom-left corner.
+;      - Steel Blue Filler Bar (CreateTopBlockBitmap): Fills the upper horizontal track cutout 
+;        with a rounded top-left corner sweep.
+; ==========================================================================================
 ; ==========================================================================================
